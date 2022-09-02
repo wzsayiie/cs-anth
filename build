@@ -1,0 +1,18 @@
+#!/bin/sh
+
+mkdir -p bin
+mkdir -p lib
+
+_src="alibh/*_posix.c"
+_out="lib/libh"
+
+_inc="\
+    -Ialibc \
+    -Ialibh \
+    -Isrcutils"
+
+if [ `uname -s` = "Darwin" ]; then
+    cc -dynamiclib   -o $_out.dylib $_inc $_src
+else
+    cc -fPIC -shared -o $_out.so    $_inc $_src
+fi
