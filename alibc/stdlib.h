@@ -7,6 +7,9 @@
 extern "C" {
 #endif
 
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
+
 void *calloc(size_t inum, size_t isz);
 void *malloc(size_t size);
 
