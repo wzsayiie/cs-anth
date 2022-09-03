@@ -1,7 +1,6 @@
 #pragma once
 
-#include "stdbool.h"
-#include "stddef.h"
+#include "fileio.h"
 
 #if __cplusplus
 extern "C" {
