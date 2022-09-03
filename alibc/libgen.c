@@ -1,6 +1,6 @@
 #include "libgen.h"
 #include "string.h"
-#include "pathstr.h"
+#include "strutil.h"
 
 static char *posslastsep(char *path) {
     char *it = path + strlen(path) - 2;
