@@ -1,17 +1,26 @@
 #pragma once
 
-#include "stdalloc.h"
-#include "stdsystem.h"
+#include "memory.h"
+#include "os.h"
 
 #if __cplusplus
 extern "C" {
 #endif
 
-#define EXIT_SUCCESS 0
-#define EXIT_FAILURE 1
+//memory management:
+
+#define realloc _h_realloc
+#define free    _h_free
 
 void *calloc(size_t inum, size_t isz);
 void *malloc(size_t size);
+
+//program utilities:
+
+#define system _h_system
+
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
 
 #if __cplusplus
 }

@@ -6,8 +6,8 @@
 extern "C" {
 #endif
 
-void *realloc(void *ptr, size_t size);
-void  free   (void *ptr);
+void *_h_realloc(void *ptr, size_t size);
+void  _h_free   (void *ptr);
 
 #if __cplusplus
 }

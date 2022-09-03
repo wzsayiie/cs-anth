@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-int system(const char *cmd);
+int _h_system(const char *cmd);
 
 #if __cplusplus
 }

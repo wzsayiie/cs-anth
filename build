@@ -3,13 +3,9 @@
 mkdir -p bin
 mkdir -p lib
 
-_src="alibh/*_posix.c"
 _out="lib/libh"
-
-_inc="\
-    -Ialibc \
-    -Ialibh \
-    -Isrcutils"
+_inc="-Ialibh"
+_src="alibh/*.c"
 
 if [ `uname -s` = "Darwin" ]; then
     cc -dynamiclib   -o $_out.dylib $_inc $_src

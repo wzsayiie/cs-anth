@@ -22,7 +22,7 @@
     #error "unknown word size."
 #endif
 
-//which os.
+//which os:
 #if __FreeBSD__
     #define OS_FBSD  1
 #elif __MACH__
@@ -34,3 +34,5 @@
 #else
     #error "unknown os."
 #endif
+
+#define OS_POSIX (OS_FBSD || OS_MAC || OS_LINUX)

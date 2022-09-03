@@ -1,5 +1,5 @@
 #include "fileutil.h"
-#include "fileop.h"
+#include "fileio.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
@@ -38,7 +38,7 @@ char **dcopyitems(const char *path, int *num) {
     //allocate number at a time.
     const size_t ONCE_ALLOC_N = 16;
 
-    DIRECT *dir = dopen(path);
+    HDIR *dir = dopen(path);
     if (!dir) {
         *num = 0;
         return NULL;
