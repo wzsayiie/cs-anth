@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-typedef struct __FILE FILE;
+typedef struct _file FILE;
 
 FILE *fopen (const char *path, const char *mode);
 int   fclose(FILE *file);
