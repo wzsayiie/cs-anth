@@ -79,19 +79,13 @@ DIRECT *dopen(const char *path) {
     return (DIRECT *)opendir(path);
 }
 
-size_t dread(DIRECT *dir, char *sub, size_t subsz) {
+char *dcopy(DIRECT *dir) {
     struct dirent *ent = readdir((DIR *)dir);
-    if (!ent) {
-        *sub = '\0';
-        return 0;
+    if (ent) {
+        return strdup(ent->d_name);
     }
 
-    size_t actlen = strlen(ent->d_name);
-    size_t cpylen = minv(actlen, subsz - 1);
-    strncpy(sub, ent->d_name, cpylen);
-    sub[cpylen] = '\0';
-
-    return actlen;
+    return NULL;
 }
 
 void dclose(DIRECT *dir) {

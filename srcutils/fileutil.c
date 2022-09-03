@@ -4,16 +4,21 @@
 #include "stdlib.h"
 #include "string.h"
 
-size_t freadall(const char *path, char *buf, size_t bufsz) {
+char *fcopyall(const char *path, size_t *size) {
     FILE *file = fopen(path, "rb");
     if (!file) {
-        *buf = '\0';
+        *size = 0;
         return 0;
     }
 
-    size_t actsz = fread(buf, sizeof(char), bufsz, file);
+    fseek(file, 0, SEEK_END);
+    *size = (size_t)ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char *buf = malloc(*size);
+    fread(buf, sizeof(char), *size, file);
     fclose(file);
-    return actsz;
+    return buf;
 }
 
 void fwriteall(const char *path, const void *dat, size_t datsz) {
@@ -43,16 +48,16 @@ char **dcopyitems(const char *path, int *num) {
     int    alln  = 0;
     int    usedn = 0;
 
-    char buf[256];
     while (true) {
-        size_t len = dread(dir, buf, sizeof(buf));
-        if (!len) {
+        char *it = dcopy(dir);
+        if (!it) {
             break;
         }
 
-        if (strcmp(buf, "..") == 0 ||
-            strcmp(buf, "." ) == 0 )
+        if (strcmp(it, "..") == 0 ||
+            strcmp(it, "." ) == 0 )
         {
+            free(it);
             continue;
         }
 
@@ -61,7 +66,7 @@ char **dcopyitems(const char *path, int *num) {
             items = realloc(items, alln * sizeof(char *));
         }
 
-        items[usedn] = strdup(buf);
+        items[usedn] = it;
         usedn += 1;
     }
     dclose(dir);

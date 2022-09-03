@@ -18,7 +18,7 @@ bool denter (const char *path);
 typedef struct direct DIRECT;
 
 DIRECT *dopen (const char *path);
-size_t  dread (DIRECT *dir, char *sub, size_t subsz);
+char   *dcopy (DIRECT *dir); //return value need to free.
 void    dclose(DIRECT *dir);
 
 #if __cplusplus
