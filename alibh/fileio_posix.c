@@ -22,7 +22,7 @@ bool _h_fexists(const char *path, bool *isdir) {
     if (isdir) {
         *isdir = dir;
     }
-    return err;
+    return !err;
 }
 
 bool _h_rename(const char *oldn, const char *newn) {
