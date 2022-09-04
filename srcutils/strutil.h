@@ -8,8 +8,8 @@ extern "C" {
 
 //string:
 
-bool hasprefix(const char *str, const char *pre);
-bool hassuffix(const char *str, const char *suf);
+bool startswith(const char *str, const char *pre);
+bool endswith  (const char *str, const char *suf);
 
 //path string:
 

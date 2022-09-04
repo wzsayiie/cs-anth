@@ -4,12 +4,12 @@
 
 //string:
 
-bool hasprefix(const char *str, const char *pre) {
+bool startswith(const char *str, const char *pre) {
     size_t n = strlen(pre);
     return strncmp(str, pre, n) == 0;
 }
 
-bool hassuffix(const char *str, const char *suf) {
+bool endswith(const char *str, const char *suf) {
     size_t m = strlen(str);
     size_t n = strlen(suf);
 
