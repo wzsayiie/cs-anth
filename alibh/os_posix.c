@@ -1,8 +1,4 @@
 #include "os.h"
-#include "environ.h"
-
-#if OS_POSIX
-
 #include "stdlib.h"
 #include "sys/time.h"
 #include "unistd.h"
@@ -25,5 +21,3 @@ int64_t _h_nowmilli() {
 int _h_system(const char *cmd) {
     return system(cmd);
 }
-
-#endif //OS_POSIX.

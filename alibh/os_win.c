@@ -1,8 +1,4 @@
 #include "os.h"
-#include "environ.h"
-
-#if OS_WIN
-
 #include "stdlib.h"
 
 void _h_sleepmilli(int64_t milli) {
@@ -15,5 +11,3 @@ int64_t _h_nowmilli() {
 int _h_system(const char *cmd) {
     return system(cmd);
 }
-
-#endif //OS_WIN.
