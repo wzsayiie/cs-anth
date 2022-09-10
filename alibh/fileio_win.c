@@ -1,8 +1,5 @@
 #include "fileio.h"
-#include "environ.h"
 #include "stdio.h"
-
-#if OS_WIN
 
 //files management:
 
@@ -82,5 +79,3 @@ char *_h_dcopy(HDIR *dir) {
 
 void _h_dclose(HDIR *dir) {
 }
-
-#endif //OS_WIN.

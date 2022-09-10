@@ -1,8 +1,9 @@
 #include "os.h"
 #include "environ.h"
-#include "stdlib.h"
 
 #if OS_WIN
+
+#include "stdlib.h"
 
 void _h_sleepmilli(int64_t milli) {
 }

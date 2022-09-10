@@ -1,10 +1,11 @@
 #include "os.h"
 #include "environ.h"
+
+#if OS_POSIX
+
 #include "stdlib.h"
 #include "sys/time.h"
 #include "unistd.h"
-
-#if OS_POSIX
 
 void _h_sleepmilli(int64_t milli) {
     useconds_t micro = (useconds_t)milli * 1000;

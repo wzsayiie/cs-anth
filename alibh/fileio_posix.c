@@ -1,12 +1,9 @@
 #include "fileio.h"
-#include "environ.h"
 #include "dirent.h"
 #include "stdio.h"
 #include "string.h"
 #include "sys/stat.h"
 #include "unistd.h"
-
-#if OS_POSIX
 
 #if OS_MAC
     #include "mach-o/dyld.h"
@@ -132,5 +129,3 @@ char *_h_dcopy(HDIR *dir) {
 void _h_dclose(HDIR *dir) {
     closedir((DIR *)dir);
 }
-
-#endif //OS_POSIX.
