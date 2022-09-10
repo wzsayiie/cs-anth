@@ -6,12 +6,15 @@ export ANTH_HOME=$0:a:h
 # "path".
 export PATH=$PATH:$ANTH_HOME/bin
 
-# user configuration.
-if [ -f $ANTH_HOME/ucfg ]; then
-    source $ANTH_HOME/ucfg
-fi
+# commands.
+alias cls=clear
 
 # shell configuration.
 export LSCOLORS=exaxaxaxaxaxaxaxaxaxax
 export CLICOLOR=1
 PROMPT="%F{green}%~ %# %f"
+
+# user configuration.
+if [ -f $ANTH_HOME/ucfg ]; then
+    source $ANTH_HOME/ucfg
+fi
