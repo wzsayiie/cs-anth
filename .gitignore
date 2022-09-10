@@ -1,9 +1,10 @@
 .DS_Store
 
-bin/
-lib/
+/bin/
+/lib/
 
-cmdsh.exe
+/*.exe
+/*.dll
 
-ucfg
-ucfg.bat
+/ucfg
+/ucfg.bat

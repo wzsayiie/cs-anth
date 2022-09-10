@@ -4,15 +4,20 @@ set -e -u
 
 cd `dirname $0`
 
+# create library directories.
 mkdir -p bin
 mkdir -p lib
 
+# build the host library:
 _out="lib/libh"
-_inc="-Ialibh"
-_src="alibh/*.c"
+_inc="alibh"
+
+_src="\
+    alibh/*_all.c \
+    alibh/*_posix.c"
 
 if [ `uname -s` = "Darwin" ]; then
-    cc -dynamiclib   -o $_out.dylib $_inc $_src
+    cc -dynamiclib   -o $_out.dylib -I$_inc $_src
 else
-    cc -fPIC -shared -o $_out.so    $_inc $_src
+    cc -fPIC -shared -o $_out.so    -I$_inc $_src
 fi
