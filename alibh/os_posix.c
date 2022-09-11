@@ -1,6 +1,6 @@
 #include "os.h"
 #include "stdlib.h"
-#include "sys/timeb.h"
+#include "sys/time.h"
 #include "unistd.h"
 
 void _h_sleepmilli(int64_t milli) {
@@ -9,10 +9,12 @@ void _h_sleepmilli(int64_t milli) {
 }
 
 int64_t _h_nowmilli() {
-    struct timeb tm;
-    ftime(&tm);
+    struct timeval time;
+    gettimeofday(&time, NULL);
 
-    return (int64_t)tm.time * 1000 + (int64_t)tm.millitm;
+    int64_t a = (int64_t)time.tv_sec  * 1000;
+    int64_t b = (int64_t)time.tv_usec / 1000;
+    return a + b;
 }
 
 int _h_system(const char *cmd) {
