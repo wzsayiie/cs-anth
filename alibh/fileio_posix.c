@@ -25,14 +25,17 @@ bool _h_fexists(const char *path, bool *isdir) {
 
 size_t _h_getexepath(char *buf, size_t bufsz) {
 #if OS_MAC
-    int  err = _NSGetExecutablePath(buf, (uint32_t *)&bufsz);
-    bool ok  = !err;
+    int  err  = _NSGetExecutablePath(buf, (uint32_t *)&bufsz);
+    bool okay = !err;
 #else
-    ssize_t sz = readlink("/proc/self/exe", buf, bufsz);
-    bool    ok = sz > 0;
+    ssize_t size = readlink("/proc/self/exe", buf, bufsz - 1);
+    bool    okay = size > 0;
+
+    //NOTE: "readlink" does not append a terminating '\0'.
+    buf[size] = '\0';
 #endif
 
-    if (ok) {
+    if (okay) {
         return strlen(buf);
     } else {
         *buf = '\0';
