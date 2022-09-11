@@ -7,7 +7,7 @@ export ANTH_HOME=$0:a:h
 export PATH=$PATH:$ANTH_HOME/bin
 
 # commands.
-alias cls=clear
+alias cls="clear"
 
 # shell configuration.
 export LSCOLORS=exaxaxaxaxaxaxaxaxaxax
