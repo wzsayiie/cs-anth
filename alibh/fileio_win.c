@@ -1,10 +1,20 @@
 #include "fileio.h"
+#include "direct.h"
 #include "stdio.h"
+#include "sys/stat.h"
+#include "windows.h"
 
 //files management:
 
 bool _h_fexists(const char *path, bool *isdir) {
-    return false;
+    struct stat info;
+    int  err = stat(path, &info);
+    bool dir = !err && (info.st_mode & S_IFMT == S_IFDIR);
+
+    if (isdir) {
+        *isdir = dir;
+    }
+    return !err;
 }
 
 bool _h_rename(const char *oldn, const char *newn) {
@@ -19,63 +29,88 @@ bool _h_remove(const char *path) {
 
 //files read & write:
 
-HFILE *_h_fopen(const char *path, const char *mode) {
-    return (HFILE *)fopen(path, mode);
+AFILE *_h_fopen(const char *path, const char *mode) {
+    return (AFILE *)fopen(path, mode);
 }
 
-bool _h_fclose(HFILE *file) {
+bool _h_fclose(AFILE *file) {
     int err = fclose((FILE *)file);
     return !err;
 }
 
-size_t _h_fread(void *buf, size_t isz, size_t inum, HFILE *file) {
+size_t _h_fread(void *buf, size_t isz, size_t inum, AFILE *file) {
     return fread(buf, isz, inum, (FILE *)file);
 }
 
-size_t _h_fwrite(const void *ptr, size_t isz, size_t inum, HFILE *file) {
+size_t _h_fwrite(const void *ptr, size_t isz, size_t inum, AFILE *file) {
     return fwrite(ptr, isz, inum, (FILE *)file);
 }
 
-bool _h_fseek(HFILE *file, long offset, int seekbase) {
+bool _h_fseek(AFILE *file, long offset, int seekbase) {
     int err = fseek((FILE *)file, offset, seekbase);
     return !err;
 }
 
-long _h_ftell(HFILE *file) {
+long _h_ftell(AFILE *file) {
     return ftell((FILE *)file);
 }
 
 //directories management:
 
 size_t _h_getexepath(char *buf, size_t bufsz) {
-    return 0;
+    return (size_t)GetModuleFileNameA(NULL, buf, (DWORD)bufsz);
 }
 
 size_t _h_getworkdir(char *buf, size_t bufsz) {
-    return 0;
+    char *dir = getcwd(buf, (int)bufsz);
+    if (dir) {
+        return strlen(buf);
+    } else {
+        *buf = '\0';
+        return 0;
+    }
 }
 
 size_t _h_gettmpdir(char *buf, size_t bufsz) {
-    return 0;
+    char path[MAX_PATH + 1];
+    DWORD slen = GetTempPathA((DWORD)sizeof(path), path);
+    if (slen == 0) {
+        *buf = '\0';
+        return 0;
+    }
+
+    size_t llen = (size_t)GetLongPathNameA(path, buf, (DWORD)bufsz);
+    if (llen == 0) {
+        *buf = '\0';
+        return 0;
+    }
+
+    if (buf[llen - 1] == '\\') {
+        buf[llen - 1] = '\0';
+        llen -= 1;
+    }
+    return llen;
 }
 
 //directories read & write:
 
 bool _h_dmake(const char *path) {
-    return false;
+    int err = _mkdir(path);
+    return !err;
 }
 
 bool _h_denter(const char *path) {
-    return false;
+    int err = _chdir(path);
+    return !err;
 }
 
-HDIR *_h_dopen(const char *path) {
+ADIR *_h_dopen(const char *path) {
     return NULL;
 }
 
-char *_h_dcopy(HDIR *dir) {
+char *_h_dcopy(ADIR *dir) {
     return NULL;
 }
 
-void _h_dclose(HDIR *dir) {
+void _h_dclose(ADIR *dir) {
 }
