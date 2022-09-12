@@ -1,5 +1,4 @@
 #include "os.h"
-#include "stdlib.h"
 #include "sys/time.h"
 #include "unistd.h"
 
@@ -15,8 +14,4 @@ int64_t _h_nowmilli() {
     int64_t a = (int64_t)time.tv_sec  * 1000;
     int64_t b = (int64_t)time.tv_usec / 1000;
     return a + b;
-}
-
-int _h_system(const char *cmd) {
-    return system(cmd);
 }
