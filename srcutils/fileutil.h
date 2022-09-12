@@ -2,10 +2,6 @@
 
 #include "fileio.h"
 
-#if __cplusplus
-extern "C" {
-#endif
-
 #define fexists    _h_fexists
 #define getexepath _h_getexepath
 #define getworkdir _h_getworkdir
@@ -16,14 +12,12 @@ extern "C" {
 #define dcopy      _h_dcopy
 #define dclose     _h_dclose
 
-char *fcopyall (const char *path, size_t *size); //return value need to free.
-void  fwriteall(const char *path, const void *dat, size_t datsz);
-void  dmakeall (const char *path);
+//return value need to free.
+__libf char *fcopyall(const char *path, size_t *size);
+
+__libf void fwriteall(const char *path, const void *dat, size_t datsz);
+__libf void dmakeall (const char *path);
 
 //get sub-items of a directory.
-char **dcopyitems(const char *path , int *num);
-void   dfreeitems(char      **items, int  num);
-
-#if __cplusplus
-}
-#endif
+__libf char **dcopyitems(const char *path , int *num);
+__libf void   dfreeitems(char      **items, int  num);

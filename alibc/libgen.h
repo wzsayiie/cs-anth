@@ -1,12 +1,6 @@
 #pragma once
 
-#if __cplusplus
-extern "C" {
-#endif
+#include "condition.h"
 
-char *basename(char *path);
-char *dirname (char *path);
-
-#if __cplusplus
-}
-#endif
+__libf char *basename(char *path);
+__libf char *dirname (char *path);

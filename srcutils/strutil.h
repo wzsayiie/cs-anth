@@ -1,23 +1,16 @@
 #pragma once
 
+#include "condition.h"
 #include "stdbool.h"
-
-#if __cplusplus
-extern "C" {
-#endif
 
 //string:
 
-bool startswith(const char *str, const char *pre);
-bool endswith  (const char *str, const char *suf);
+__libf bool startswith(const char *str, const char *pre);
+__libf bool endswith  (const char *str, const char *suf);
 
 //path string:
 
-bool ispathsep(char ch);
+__libf bool ispathsep(char ch);
 
-char *pathcat(char *dir, const char *base);
-char *pathtid(char *path);
-
-#if __cplusplus
-}
-#endif
+__libf char *pathcat(char *dir, const char *base);
+__libf char *pathtid(char *path);

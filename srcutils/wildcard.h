@@ -1,16 +1,9 @@
 #pragma once
 
+#include "condition.h"
 #include "stdbool.h"
-
-#if __cplusplus
-extern "C" {
-#endif
 
 //NOTE: only '?' and '*' are supported.
 
-bool iswcpat(const char *pat);
-bool wcmatch(const char *pat, const char *str);
-
-#if __cplusplus
-}
-#endif
+__libf bool iswcpat(const char *pat);
+__libf bool wcmatch(const char *pat, const char *str);
