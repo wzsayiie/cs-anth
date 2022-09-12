@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include "strutil.h"
 
 #define BUF_SIZE 128
 #define BAT_FILE "cmdsh.bat"
