@@ -9,9 +9,10 @@
 #endif
 
 #if CMPL_MSC
-    #define __dllvisible __declspec(dllexport)
+    #define __dllexport __declspec(dllexport)
 #else
-    #define __dllvisible
+    #define __dllexport
 #endif
 
-#define __export  __extern_c __dllvisible
+#define __host  __extern_c __dllexport
+#define __libf  __extern_c
