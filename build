@@ -8,16 +8,17 @@ cd `dirname $0`
 mkdir -p bin
 mkdir -p lib
 
-# build the host library:
-_out="lib/libh"
-_inc="alibh"
-
-_src="\
-    alibh/*_all.c \
-    alibh/*_posix.c"
-
+# build the libraries:
 if [ `uname -s` = "Darwin" ]; then
-    cc -dynamiclib   -o $_out.dylib -I$_inc $_src
+    cc -o lib/libah.dylib -dynamiclib -I"libah" libah/*_all.c libah/*_posix.c
 else
-    cc -fPIC -shared -o $_out.so    -I$_inc $_src
+    cc -o lib/libah.so -fPIC -shared  -I"libah" libah/*_all.c libah/*_posix.c
 fi
+
+cc -c -I"libac" -I"libaex" -I"libah" libac/*.c
+ar cr lib/libac.a *.o
+rm *.o
+
+cc -c -I"libac" -I"libaex" -I"libah" libaex/*.c
+ar cr lib/libaex.a *.o
+rm *.o

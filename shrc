@@ -3,8 +3,14 @@
 # root directory.
 export ANTH_HOME=$0:a:h
 
-# "path".
+# environment:
 export PATH=$PATH:$ANTH_HOME/bin
+
+export CPATH=$ANTH_HOME/libac:$ANTH_HOME/libaex:$ANTH_HOME/libah
+
+export      LIBRARY_PATH=$ANTH_HOME/lib
+export DYLD_LIBRARY_PATH=$ANTH_HOME/lib
+export   LD_LIBRARY_PATH=$ANTH_HOME/lib
 
 # commands.
 alias cls="clear"
