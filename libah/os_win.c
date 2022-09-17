@@ -2,13 +2,16 @@
 #include "sys/timeb.h"
 #include "windows.h"
 
-void _h_sleepmilli(int64_t milli) {
+void _h_sleepmilli(long long milli) {
     Sleep((DWORD)milli);
 }
 
-int64_t _h_nowmilli() {
+long long _h_nowmilli() {
     struct _timeb tm;
     _ftime(&tm);
 
-    return (int64_t)tm.time * 1000 + (int64_t)tm.millitm;
+    return (
+        (long long)tm.time * 1000 +
+        (long long)tm.millitm
+    );
 }
