@@ -2,6 +2,7 @@
 
 #include "condition.h"
 #include "stdbool.h"
+#include "string.h"
 
 //string:
 

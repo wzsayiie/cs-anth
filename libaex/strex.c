@@ -1,6 +1,5 @@
-#include "strutil.h"
+#include "strex.h"
 #include "environ.h"
-#include "string.h"
 
 //string:
 

@@ -1,11 +1,10 @@
 //count the number of lines of source files.
 
-#include "fileutil.h"
+#include "fileex.h"
 #include "libgen.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "string.h"
-#include "strutil.h"
+#include "strex.h"
 #include "wildcard.h"
 
 typedef struct _countinf {
