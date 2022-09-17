@@ -8,16 +8,14 @@ if %ANTH_HOME:~-1%==\ (
 )
 
 :: environment.
-set PATH=%PATH%;^
+set PATH=^
 %ANTH_HOME%\bin;^
-%ANTH_HOME%\lib
+%ANTH_HOME%\lib;^
+%PATH%
 
 :: commands.
-doskey cat   = type $*
-doskey cd    = cd /d $1
-doskey clear = cls
+doskey cd    = cd  /d $1
 doskey ls    = dir /d $*
-doskey mv    = move $*
 doskey open  = start "" $*
 doskey which = where $*
 
