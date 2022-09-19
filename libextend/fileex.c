@@ -1,7 +1,7 @@
 #include "fileex.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "string.h"
+#include "strex.h"
 
 char *fcopyall(const char *path, size_t *size) {
     FILE *file = fopen(path, "rb");
@@ -31,6 +31,26 @@ void fwriteall(const char *path, const void *dat, size_t datsz) {
 }
 
 void dmakeall(const char *path) {
+    char *bgn = strdup(path);
+    char *end = bgn;
+
+    while (*end) {
+        while (ispathsep(*end)) {
+            end += 1;
+        }
+        while (*end && !ispathsep(*end)) {
+            end += 1;
+        }
+
+        char sep = *end;
+        *end = '\0';
+        if (!fexists(bgn, NULL)) {
+            dmake(bgn);
+        }
+        *end = sep;
+    }
+
+    free(bgn);
 }
 
 char **dcopyitems(const char *path, int *num) {
