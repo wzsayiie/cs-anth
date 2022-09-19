@@ -4,9 +4,13 @@
 export ANTH_HOME=$0:a:h
 
 # environment:
-export PATH=$PATH:$ANTH_HOME/bin
+export PATH=\
+$ANTH_HOME/bin:\
+$PATH
 
-export CPATH=$ANTH_HOME/libac:$ANTH_HOME/libaex:$ANTH_HOME/libah
+export CPATH=\
+$ANTH_HOME/libextend:\
+$ANTH_HOME/libhost
 
 export      LIBRARY_PATH=$ANTH_HOME/lib
 export DYLD_LIBRARY_PATH=$ANTH_HOME/lib
