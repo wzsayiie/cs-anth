@@ -7,6 +7,9 @@ if %ANTH_HOME:~-1%==\ (
     set ANTH_HOME=%ANTH_HOME:~0,-1%
 )
 
+:: prompt string.
+prompt $p$s%%$s
+
 :: environment.
 set PATH=^
 %ANTH_HOME%\bin;^
@@ -19,10 +22,7 @@ doskey ls    = dir /d $*
 doskey open  = start "" $*
 doskey which = where $*
 
-:: shell configuration.
-prompt $p$s%%$s
-
-:: user configutation.
-if exist %ANTH_HOME%\ucfg.bat (
-    call %ANTH_HOME%\ucfg.bat
+:: user rc.
+if exist %ANTH_HOME%\urc.bat (
+    call %ANTH_HOME%\urc.bat
 )

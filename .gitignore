@@ -6,5 +6,4 @@
 /cmdsh.exe
 /host.dll
 
-/ucfg
-/ucfg.bat
+/urc.*
