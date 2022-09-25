@@ -9,7 +9,7 @@ elif [[ "$0" == "ksh" ]]; then
 
 else # zsh.
     export ANTH_HOME=$0:a:h
-    export PS1="%F{green}%~ %F{gray}%#%f "
+    export PS1="%F{green}%~ %F{white}%#%f "
 fi
 
 # environment:
