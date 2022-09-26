@@ -1,6 +1,6 @@
 #pragma once
 
-#include "fileio.h"
+#include "fileapi.h"
 
 #define fexists    _h_fexists
 #define getexepath _h_getexepath

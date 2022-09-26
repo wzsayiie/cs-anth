@@ -1,6 +1,6 @@
 //count the number of lines of source files.
 
-#include "fileex.h"
+#include "fileio.h"
 #include "libgen.h"
 #include "stdio.h"
 #include "stdlib.h"
