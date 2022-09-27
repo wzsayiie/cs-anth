@@ -8,7 +8,7 @@ if %ANTH_HOME:~-1%==\ (
 )
 
 :: prompt string.
-prompt $p$s%%$s
+prompt $e[32m$p$s$e[37m$g$e[0m$s
 
 :: environment.
 set PATH=^
