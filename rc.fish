@@ -3,7 +3,7 @@ set ANTH_HOME (cd (dirname (status --current-file)); pwd)
 
 function fish_prompt
     printf "%s%s %s>%s " \
-        (set_color) (pwd) (set_color white) (set_color normal)
+        (set_color green) (pwd) (set_color white) (set_color normal)
 end
 
 # environment:
