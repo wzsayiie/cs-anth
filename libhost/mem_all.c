@@ -1,4 +1,4 @@
-#include "memory.h"
+#include "mem.h"
 #include "stdlib.h"
 
 void *_h_realloc(void *ptr, size_t size) {
