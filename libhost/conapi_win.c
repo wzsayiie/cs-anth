@@ -66,13 +66,7 @@ int _h_readchar(void) {
 
     //in canonical mode.
     if (!_israw) {
-        int ch = _getch();
-
-        if (isprint(ch)) {
-            return ch;
-        } else {
-            return C_NUL;
-        }
+        return getchar();
     }
 
     //in raw model:
@@ -82,35 +76,49 @@ int _h_readchar(void) {
     DWORD        num = 0;
 
     ReadConsoleInput(inh, &rec, 1, &num);
-    if (rec.EventType != KEY_EVENT || !rec.Event.KeyEvent.bKeyDown) {
+    if (rec.EventType != KEY_EVENT) {
         return C_NUL;
     }
 
-    WORD code = rec.Event.KeyEvent.wVirtualKeyCode;
-    char asci = rec.Event.KeyEvent.uChar.AsciiChar;
-    bool ctrl =
-        (rec.Event.KeyEvent.dwControlKeyState & LEFT_CTRL_PRESSED ) ||
-        (rec.Event.KeyEvent.dwControlKeyState & RIGHT_CTRL_PRESSED) ;
+    KEY_EVENT_RECORD key = rec.Event.KeyEvent;
+    if (!key.bKeyDown) {
+        return C_NUL;
+    }
+
+    DWORD modi = key.dwControlKeyState;
+    bool  ctrl = (modi & LEFT_CTRL_PRESSED) || (modi & RIGHT_CTRL_PRESSED);
+    bool  shft = modi & SHIFT_PRESSED;
+    WORD  code = key.wVirtualKeyCode;
+    char  asci = key.uChar.AsciiChar;
 
     //ctrl+a ~ ctrl+z.
-    if (ctrl && 'A' <= code && code <= 'Z') {
+    if (ctrl && !shft && 'A' <= code && code <= 'Z') {
         return code - 'A' + 1;
     }
 
-    //functional.
-    if (code == VK_ESCAPE) { return C_ESC  ; }
-    if (code == VK_RETURN) { return C_ENTER; }
-    if (code == VK_TAB   ) { return C_TAB  ; }
-    if (code == VK_SPACE ) { return C_SPACE; }
-    if (code == VK_BACK  ) { return C_BACK ; }
+    //controls.
+    if (!ctrl && !shft) {
+        if (code == VK_RETURN) { return C_ENTER; }
+        if (code == VK_TAB   ) { return C_TAB  ; }
+        if (code == VK_ESCAPE) { return C_ESC  ; }
+        if (code == VK_SPACE ) { return C_SPACE; }
+        if (code == VK_BACK  ) { return C_BACK ; }
+    }
+
+    //shift+tab.
+    if (!ctrl && shft && code == VK_TAB) {
+        return C_SHIFT_TAB;
+    }
 
     //arrows.
-    if (code == VK_LEFT ) { return ctrl ? C_CTRL_LEFT  : C_LEFT ; }
-    if (code == VK_UP   ) { return ctrl ? C_CTRL_UP    : C_UP   ; }
-    if (code == VK_RIGHT) { return ctrl ? C_CTRL_RIGHT : C_RIGHT; }
-    if (code == VK_DOWN ) { return ctrl ? C_CTRL_DOWN  : C_DOWN ; }
+    if (!shft) {
+        if (code == VK_LEFT ) { return ctrl ? C_CTRL_LEFT  : C_LEFT ; }
+        if (code == VK_UP   ) { return ctrl ? C_CTRL_UP    : C_UP   ; }
+        if (code == VK_RIGHT) { return ctrl ? C_CTRL_RIGHT : C_RIGHT; }
+        if (code == VK_DOWN ) { return ctrl ? C_CTRL_DOWN  : C_DOWN ; }
+    }
 
-    //printable.
+    //printables.
     if (isprint(asci)) {
         return asci;
     }

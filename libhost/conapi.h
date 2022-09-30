@@ -13,10 +13,11 @@ __host void _h_showcur   (bool show);
 __host void _h_beginrawmode(void);
 __host void _h_endrawmode  (void);
 
-//this function is non-blocking. returns 0 if stdin has no data.
+//in canonical mode, this function do not return until the user pressed the enter key.
+//in raw mode, this function is non-blocking. if no data in stdin, it will return 0.
 __host int _h_readchar(void);
 
-//if stdin is in raw mode,
+//in raw mode,
 //"readchar" possibly returns control characters followed:
 
 #define C_NUL        ((int)0x00)
@@ -48,12 +49,14 @@ __host int _h_readchar(void);
 #define C_CTRL_Y     ((int)0x19)
 #define C_CTRL_Z     ((int)0x1A)
 
-#define C_ESC        ((int)0x1B)
 #define C_ENTER      C_CTRL_H
 #define C_TAB        C_CTRL_I
+#define C_ESC        ((int)0x1B)
 #define C_SPACE      ((int)0x20)
 #define C_BACK       ((int)0x7F)
 
+//custom control character.
+#define C_SHIFT_TAB  ((int)0xD0)
 #define C_CTRL_LEFT  ((int)0xD1)
 #define C_CTRL_UP    ((int)0xD2)
 #define C_CTRL_RIGHT ((int)0xD3)
