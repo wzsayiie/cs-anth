@@ -12,7 +12,7 @@ __host bool _h_remove (const char *path);
 
 //files read & write:
 
-typedef struct _afile AFILE;
+typedef struct _struct_AFILE AFILE;
 
 __host AFILE *_h_fopen (const char *path, const char *mode);
 __host bool   _h_fclose(AFILE *file);
@@ -38,7 +38,7 @@ __host size_t _h_gettmpdir (char *buf, size_t bufsz);
 __host bool _h_dmake (const char *path);
 __host bool _h_denter(const char *path);
 
-typedef struct _adir ADIR;
+typedef struct _struct_ADIR ADIR;
 
 __host ADIR *_h_dopen (const char *path);
 __host char *_h_dcopy (ADIR *dir); //return value need to free.

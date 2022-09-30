@@ -7,7 +7,7 @@
 #include "strex.h"
 #include "wildcard.h"
 
-typedef struct _countinf {
+typedef struct _struct_COUNTINF {
     int valid; //the number of non-blank lines.
     int blank; //the number of blank lines.
 } COUNTINF;

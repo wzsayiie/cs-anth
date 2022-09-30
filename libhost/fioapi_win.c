@@ -66,7 +66,7 @@ bool _h_denter(const char *path) {
     return !err;
 }
 
-struct _adir {
+struct _struct_ADIR {
     HANDLE           handle;
     WIN32_FIND_DATAA dat   ;
     bool             first ;
