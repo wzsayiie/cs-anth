@@ -14,7 +14,7 @@ elif [ "$0" = "dash" ]; then
 
 elif [ "$0" = "ksh" ]; then
     export ANTH_HOME=$(cd $(dirname ${.sh.file}) && pwd)
-    export PS1="$(echo "\033[32m$PWD \033[37m\$\033[0m ")"
+    export PS1="$PWD \$ "
 
 else # zsh.
     export ANTH_HOME=$0:a:h
@@ -41,5 +41,5 @@ export CLICOLOR=1
 
 # user rc.
 if [ -e $ANTH_HOME/urc.sh ]; then
-    source $ANTH_HOME/urc.sh
+    . $ANTH_HOME/urc.sh
 fi
