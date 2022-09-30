@@ -41,7 +41,7 @@ void _h_showcur(bool show) {
 static bool  _israw = false;
 static DWORD _canon = 0;
 
-void _h_beginrawmode() {
+void _h_beginrawmode(void) {
     HANDLE inh = GetStdHandle(STD_INPUT_HANDLE);
 
     //record flags in canonical mode.
@@ -52,14 +52,14 @@ void _h_beginrawmode() {
     SetConsoleMode(inh, ENABLE_WINDOW_INPUT);
 }
 
-void _h_endrawmode() {
+void _h_endrawmode(void) {
     HANDLE inh = GetStdHandle(STD_INPUT_HANDLE);
 
     _israw = false;
     SetConsoleMode(inh, _canon);
 }
 
-int _h_readchar() {
+int _h_readchar(void) {
     if (!_kbhit()) {
         return C_NUL;
     }

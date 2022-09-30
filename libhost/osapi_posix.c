@@ -7,7 +7,7 @@ void _h_sleepmilli(long long milli) {
     usleep(micro);
 }
 
-long long _h_nowmilli() {
+long long _h_nowmilli(void) {
     struct timeval time;
     gettimeofday(&time, NULL);
 

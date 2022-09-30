@@ -10,11 +10,11 @@ __host void _h_showcur   (bool show);
 
 //stdin:
 
-__host void _h_beginrawmode();
-__host void _h_endrawmode();
+__host void _h_beginrawmode(void);
+__host void _h_endrawmode  (void);
 
 //this function is non-blocking. returns 0 if stdin has no data.
-__host int _h_readchar();
+__host int _h_readchar(void);
 
 //if stdin is in raw mode,
 //"readchar" possibly returns control characters followed:
