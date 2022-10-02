@@ -95,6 +95,42 @@ static bool clipkeyrange(KEYRANGE *range, char aim) {
     return range->head->seq[range->idx] == aim;
 }
 
+static int readkeyseq() {
+    KEYRANGE range;
+    range.head = _keylist;
+    range.tail = _keylist + sizeof(_keylist) / sizeof(KEYITEM) - 1;
+    range.idx  = 1;
+
+    while (true) {
+        //only one left.
+        if (range.head == range.tail) {
+            return range.head->dst;
+        }
+
+        char    chr = 0;
+        ssize_t num = read(STDIN_FILENO, &chr, 1);
+
+        //no more data.
+        if (num != 1) {
+            bool found = clipkeyrange(&range, '\0');
+            if (found) {
+                return range.head->dst;
+            } else {
+                return C_NUL;
+            }
+        }
+
+        //step one.
+        bool found = clipkeyrange(&range, chr);
+        if (found) {
+            range.idx += 1;
+        } else {
+            return C_NUL;
+        }
+    }
+    return C_NUL;
+}
+
 int _h_readchar(void) {
     //in canonical mode.
     if (!_israw) {
@@ -102,65 +138,34 @@ int _h_readchar(void) {
     }
 
     //in raw mode:
-    KEYRANGE range;
-    memset(&range, 0, sizeof(range));
 
-    while (true) {
-        char    chr = 0;
-        ssize_t num = read(STDIN_FILENO, &chr, 1);
+    char    chr = 0;
+    ssize_t num = read(STDIN_FILENO, &chr, 1);
 
-        //no more data.
-        if (num != 1) {
-            if (range.head) {
-                bool found = clipkeyrange(&range, '\0');
-                if (found) {
-                    //the sequence end.
-                    return range.head->dst;
-                }
-            }
-
-            return C_NUL;
-        }
-
-        //step the escape sequence.
-        if (range.head) {
-            bool found = clipkeyrange(&range, chr);
-            if (found) {
-                range.idx += 1;
-                continue;
-            } else {
-                //the sequence exception.
-                return C_NUL;
-            }
-        }
-
-        //ready for escape sequences.
-        if (chr == '\e') {
-            range.head = _keylist;
-            range.tail = _keylist + sizeof(_keylist) / sizeof(KEYITEM) - 1;
-            range.idx  = 1;
-
-            continue;
-        }
-
-        //ctrl+a ~ ctrl+z.
-        if (1 <= chr && chr <= 26) {
-            return chr;
-        }
-
-        //controls.
-        if (chr == C_ENTER) { return C_ENTER; }
-        if (chr == C_TAB  ) { return C_TAB  ; }
-        if (chr == C_SPACE) { return C_SPACE; }
-        if (chr == C_BACK ) { return C_BACK ; }
-
-        //printables.
-        if (isprint(chr)) {
-            return chr;
-        }
-
-        //unsupports.
+    //no more data.
+    if (num != 1) {
         return C_NUL;
+    }
+
+    //read a escape sequence.
+    if (chr == '\e') {
+        return readkeyseq();
+    }
+
+    //ctrl+a ~ ctrl+z.
+    if (1 <= chr && chr <= 26) {
+        return chr;
+    }
+
+    //controls.
+    if (chr == C_ENTER) { return C_ENTER; }
+    if (chr == C_TAB  ) { return C_TAB  ; }
+    if (chr == C_SPACE) { return C_SPACE; }
+    if (chr == C_BACK ) { return C_BACK ; }
+
+    //printables.
+    if (isprint(chr)) {
+        return chr;
     }
 
     return C_NUL;
