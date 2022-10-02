@@ -111,11 +111,11 @@ int _h_readchar(void) {
     }
 
     //arrows.
-    if (!shft) {
-        if (code == VK_LEFT ) { return ctrl ? C_CTRL_LEFT  : C_LEFT ; }
-        if (code == VK_UP   ) { return ctrl ? C_CTRL_UP    : C_UP   ; }
-        if (code == VK_RIGHT) { return ctrl ? C_CTRL_RIGHT : C_RIGHT; }
-        if (code == VK_DOWN ) { return ctrl ? C_CTRL_DOWN  : C_DOWN ; }
+    if (!ctrl) {
+        if (code == VK_LEFT ) { return shft ? C_SHIFT_LEFT  : C_LEFT ; }
+        if (code == VK_UP   ) { return shft ? C_SHIFT_UP    : C_UP   ; }
+        if (code == VK_RIGHT) { return shft ? C_SHIFT_RIGHT : C_RIGHT; }
+        if (code == VK_DOWN ) { return shft ? C_SHIFT_DOWN  : C_DOWN ; }
     }
 
     //printables.

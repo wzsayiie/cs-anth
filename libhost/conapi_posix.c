@@ -60,22 +60,22 @@ void _h_endrawmode(void) {
 }
 
 typedef struct _struct_KEYITEM {
-    int  dst;
-    char seq[8];
+    int         dst;
+    const char *seq;
 } KEYITEM;
 
 static KEYITEM _keylist[] = {
     //IMPORTANT: data need to sort.
-    { C_ESC       , { '\e','\0', } },
-    { C_CTRL_UP   , { '\e', '[', '1', ';', '5', 'A', '\0' } },
-    { C_CTRL_DOWN , { '\e', '[', '1', ';', '5', 'B', '\0' } },
-    { C_CTRL_RIGHT, { '\e', '[', '1', ';', '5', 'C', '\0' } },
-    { C_CTRL_LEFT , { '\e', '[', '1', ';', '5', 'D', '\0' } },
-    { C_UP        , { '\e', '[', 'A', '\0' } },
-    { C_DOWN      , { '\e', '[', 'B', '\0' } },
-    { C_RIGHT     , { '\e', '[', 'C', '\0' } },
-    { C_LEFT      , { '\e', '[', 'D', '\0' } },
-    { C_SHIFT_TAB , { '\e', '[', 'Z', '\0' } },
+    { C_ESC        , "\e"      },
+    { C_SHIFT_UP   , "\e[1;2A" },
+    { C_SHIFT_DOWN , "\e[1;2B" },
+    { C_SHIFT_RIGHT, "\e[1;2C" },
+    { C_SHIFT_LEFT , "\e[1;2D" },
+    { C_UP         , "\e[A"    },
+    { C_DOWN       , "\e[B"    },
+    { C_RIGHT      , "\e[C"    },
+    { C_LEFT       , "\e[D"    },
+    { C_SHIFT_TAB  , "\e[Z"    },
 };
 
 typedef struct _struct_KEYRANGE {
