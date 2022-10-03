@@ -17,15 +17,79 @@ void _h_getwinsize(int *width, int *height) {
 }
 
 void _h_stepcur(int stepx, int stepy) {
-    if (stepx < 0) { fprintf(stdout, "\e[%dD", -stepx); }
-    if (stepx > 0) { fprintf(stdout, "\e[%dC",  stepx); }
+    if (stepx < 0) { printf("\e[%dD", -stepx); }
+    if (stepx > 0) { printf("\e[%dC",  stepx); }
 
-    if (stepy < 0) { fprintf(stdout, "\e[%dA", -stepy); }
-    if (stepy > 0) { fprintf(stdout, "\e[%dB",  stepy); }
+    if (stepy < 0) { printf("\e[%dA", -stepy); }
+    if (stepy > 0) { printf("\e[%dB",  stepy); }
 }
 
 void _h_showcur(bool show) {
-    fprintf(stdout, show ? "\e[?25h" : "\e[?25l");
+    printf(show ? "\e[?25h" : "\e[?25l");
+}
+
+void _h_setforecolor(int color) {
+    static const int code[C_DEFCOLOR + 1] = {
+        [C_BLACK      ] = 30,
+        [C_RED        ] = 31,
+        [C_GREEN      ] = 32,
+        [C_YELLOW     ] = 33,
+        [C_BLUE       ] = 34,
+        [C_PURPLE     ] = 35,
+        [C_CYAN       ] = 36,
+        [C_WHITE      ] = 37,
+
+        [C_LIGHTBLACK ] = 90,
+        [C_LIGHTRED   ] = 91,
+        [C_LIGHTGREEN ] = 92,
+        [C_LIGHTYELLOW] = 93,
+        [C_LIGHTBLUE  ] = 94,
+        [C_LIGHTPURPLE] = 95,
+        [C_LIGHTCYAN  ] = 96,
+        [C_LIGHTWHITE ] = 97,
+
+        [C_DEFCOLOR   ] = 39,
+    };
+
+    if (0 <= color && color <= C_DEFCOLOR) {
+        printf("\e[%dm", code[color]);
+    }
+}
+
+void _h_setbackcolor(int color) {
+    static const int code[C_DEFCOLOR + 1] = {
+        [C_BLACK      ] =  40,
+        [C_RED        ] =  41,
+        [C_GREEN      ] =  42,
+        [C_YELLOW     ] =  43,
+        [C_BLUE       ] =  44,
+        [C_PURPLE     ] =  45,
+        [C_CYAN       ] =  46,
+        [C_WHITE      ] =  47,
+
+        [C_LIGHTBLACK ] = 100,
+        [C_LIGHTRED   ] = 101,
+        [C_LIGHTGREEN ] = 102,
+        [C_LIGHTYELLOW] = 103,
+        [C_LIGHTBLUE  ] = 104,
+        [C_LIGHTPURPLE] = 105,
+        [C_LIGHTCYAN  ] = 106,
+        [C_LIGHTWHITE ] = 107,
+
+        [C_DEFCOLOR   ] =  49,
+    };
+
+    if (0 <= color && color <= C_DEFCOLOR) {
+        printf("\e[%dm", code[color]);
+    }
+}
+
+void _h_setunderline(bool under) {
+    printf(under ? "\e[4m" : "\e[24m");
+}
+
+void _h_rstprintattr(void) {
+    printf("\e[0m");
 }
 
 //stdin:

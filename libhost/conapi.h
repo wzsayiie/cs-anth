@@ -3,10 +3,33 @@
 #include "condition.h"
 #include "stdbool.h"
 
-//console window.
+//console window:
 __host void _h_getwinsize(int *width, int *height);
 __host void _h_stepcur   (int  stepx, int  stepy );
 __host void _h_showcur   (bool show);
+
+#define C_BLACK        0
+#define C_RED          1
+#define C_GREEN        2
+#define C_YELLOW       3
+#define C_BLUE         4
+#define C_PURPLE       5
+#define C_CYAN         6
+#define C_WHITE        7
+#define C_LIGHTBLACK   8
+#define C_LIGHTRED     9
+#define C_LIGHTGREEN  10
+#define C_LIGHTYELLOW 11
+#define C_LIGHTBLUE   12
+#define C_LIGHTPURPLE 13
+#define C_LIGHTCYAN   14
+#define C_LIGHTWHITE  15
+#define C_DEFCOLOR    16
+
+__host void _h_setforecolor(int  color);
+__host void _h_setbackcolor(int  color);
+__host void _h_setunderline(bool under);
+__host void _h_rstprintattr(void);
 
 //stdin:
 
