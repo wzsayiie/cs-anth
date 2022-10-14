@@ -29,7 +29,7 @@ __host void _h_showcur   (bool show);
 __host void _h_setforecolor(int  color);
 __host void _h_setbackcolor(int  color);
 __host void _h_setunderline(bool under);
-__host void _h_rstprintattr(void);
+__host void _h_resetprtattr(void);
 
 //stdin:
 

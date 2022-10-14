@@ -7,7 +7,6 @@
 
 void _h_getwinsize(int *width, int *height) {
     HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
-
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(outh, &info);
 
@@ -36,17 +35,137 @@ void _h_showcur(bool show) {
     SetConsoleCursorInfo(outh, &info);
 }
 
+#define FORE_MASK (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY)
+#define BACK_MASK (BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_INTENSITY)
+
+static bool _attrrec = false;
+static WORD _defattr = 0;
+static WORD _deffore = 0;
+static WORD _defback = 0;
+
+static void recordprtattr(void) {
+    if (_attrrec) {
+        return;
+    }
+
+    HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    GetConsoleScreenBufferInfo(outh, &info);
+
+    _attrrec = true;
+    _defattr = info.wAttributes;
+    _deffore = info.wAttributes & FORE_MASK;
+    _defback = info.wAttributes & BACK_MASK;
+}
+
+static void setprtattr(WORD mask, WORD value) {
+    HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    GetConsoleScreenBufferInfo(outh, &info);
+
+    WORD attr = (info.wAttributes & ~mask) | (value & mask);
+    SetConsoleTextAttribute(outh, attr);
+}
+
+void _h_setforecolor(int color) {
+    recordprtattr();
+
+    static WORD code[C_DEFCOLOR] = {0};
+    if (!code[C_DEFCOLOR - 1]) {
+
+        code[C_BLACK      ] =  0;
+        code[C_RED        ] =  FOREGROUND_RED   ;
+        code[C_GREEN      ] =  FOREGROUND_GREEN ;
+        code[C_YELLOW     ] =  FOREGROUND_RED   | FOREGROUND_GREEN ;
+        code[C_BLUE       ] =  FOREGROUND_BLUE  ;
+        code[C_PURPLE     ] =  FOREGROUND_RED   | FOREGROUND_BLUE  ;
+        code[C_CYAN       ] =  FOREGROUND_GREEN | FOREGROUND_BLUE  ;
+        code[C_WHITE      ] =  FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE ;
+
+        code[C_LIGHTBLACK ] = code[C_BLACK ] | FOREGROUND_INTENSITY;
+        code[C_LIGHTRED   ] = code[C_RED   ] | FOREGROUND_INTENSITY;
+        code[C_LIGHTGREEN ] = code[C_GREEN ] | FOREGROUND_INTENSITY;
+        code[C_LIGHTYELLOW] = code[C_YELLOW] | FOREGROUND_INTENSITY;
+        code[C_LIGHTBLUE  ] = code[C_BLUE  ] | FOREGROUND_INTENSITY;
+        code[C_LIGHTPURPLE] = code[C_PURPLE] | FOREGROUND_INTENSITY;
+        code[C_LIGHTCYAN  ] = code[C_CYAN  ] | FOREGROUND_INTENSITY;
+        code[C_LIGHTWHITE ] = code[C_WHITE ] | FOREGROUND_INTENSITY;
+    }
+
+    if (0 <= color && color < C_DEFCOLOR) {
+        setprtattr(FORE_MASK, code[color]);
+
+    } else if (color == C_DEFCOLOR) {
+        setprtattr(FORE_MASK, _deffore);
+    }
+}
+
+void _h_setbackcolor(int color) {
+    recordprtattr();
+
+    static WORD code[C_DEFCOLOR] = {0};
+    if (!code[C_DEFCOLOR - 1]) {
+
+        code[C_BLACK      ] =  0;
+        code[C_RED        ] =  BACKGROUND_RED   ;
+        code[C_GREEN      ] =  BACKGROUND_GREEN ;
+        code[C_YELLOW     ] =  BACKGROUND_RED   | BACKGROUND_GREEN ;
+        code[C_BLUE       ] =  BACKGROUND_BLUE  ;
+        code[C_PURPLE     ] =  BACKGROUND_RED   | BACKGROUND_BLUE  ;
+        code[C_CYAN       ] =  BACKGROUND_GREEN | BACKGROUND_BLUE  ;
+        code[C_WHITE      ] =  BACKGROUND_RED   | BACKGROUND_GREEN | BACKGROUND_BLUE ;
+
+        code[C_LIGHTBLACK ] = code[C_BLACK ] | BACKGROUND_INTENSITY;
+        code[C_LIGHTRED   ] = code[C_RED   ] | BACKGROUND_INTENSITY;
+        code[C_LIGHTGREEN ] = code[C_GREEN ] | BACKGROUND_INTENSITY;
+        code[C_LIGHTYELLOW] = code[C_YELLOW] | BACKGROUND_INTENSITY;
+        code[C_LIGHTBLUE  ] = code[C_BLUE  ] | BACKGROUND_INTENSITY;
+        code[C_LIGHTPURPLE] = code[C_PURPLE] | BACKGROUND_INTENSITY;
+        code[C_LIGHTCYAN  ] = code[C_CYAN  ] | BACKGROUND_INTENSITY;
+        code[C_LIGHTWHITE ] = code[C_WHITE ] | BACKGROUND_INTENSITY;
+    }
+
+    if (0 <= color && color < C_DEFCOLOR) {
+        setprtattr(BACK_MASK, code[color]);
+
+    } else if (color == C_DEFCOLOR) {
+        setprtattr(BACK_MASK, _defback);
+    }
+}
+
+void _h_setunderline(bool under) {
+    recordprtattr();
+
+    if (under) {
+        setprtattr(COMMON_LVB_UNDERSCORE, COMMON_LVB_UNDERSCORE);
+    } else {
+        setprtattr(COMMON_LVB_UNDERSCORE, 0);
+    }
+}
+
+void _h_resetprtattr(void) {
+    if (!_attrrec) {
+        return;
+    }
+
+    HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(outh, _defattr);
+
+    _attrrec = false;
+}
+
 //stdin:
 
-static bool  _israw = false;
-static DWORD _canon = 0;
+static bool  _israwmode = false;
+static DWORD _canonmode = 0;
 
 void _h_beginrawmode(void) {
     HANDLE inh = GetStdHandle(STD_INPUT_HANDLE);
 
     //record flags in canonical mode.
-    _israw = true;
-    GetConsoleMode(inh, &_canon);
+    _israwmode = true;
+    GetConsoleMode(inh, &_canonmode);
 
     //enable raw key input.
     SetConsoleMode(inh, ENABLE_WINDOW_INPUT);
@@ -55,8 +174,8 @@ void _h_beginrawmode(void) {
 void _h_endrawmode(void) {
     HANDLE inh = GetStdHandle(STD_INPUT_HANDLE);
 
-    _israw = false;
-    SetConsoleMode(inh, _canon);
+    _israwmode = false;
+    SetConsoleMode(inh, _canonmode);
 }
 
 int _h_readchar(void) {
@@ -65,7 +184,7 @@ int _h_readchar(void) {
     }
 
     //in canonical mode.
-    if (!_israw) {
+    if (!_israwmode) {
         return getchar();
     }
 

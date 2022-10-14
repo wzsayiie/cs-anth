@@ -88,7 +88,7 @@ void _h_setunderline(bool under) {
     printf(under ? "\e[4m" : "\e[24m");
 }
 
-void _h_rstprintattr(void) {
+void _h_resetprtattr(void) {
     printf("\e[0m");
 }
 
