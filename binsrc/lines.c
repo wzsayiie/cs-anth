@@ -8,6 +8,7 @@
 #include "wildcard.h"
 
 typedef struct _struct_COUNTINF {
+    int files; //the number of counted files.
     int valid; //the number of non-blank lines.
     int blank; //the number of blank lines.
 } COUNTINF;
@@ -53,17 +54,10 @@ char *copypath(const char *dir, const char *base) {
     return path;
 }
 
-void addup(COUNTINF *inf, bool valid) {
-    if (valid) {
-        inf->valid += 1;
-    } else {
-        inf->blank += 1;
-    }
-}
-
 void scan(const char *text, size_t size, COUNTINF *inf) {
-    bool valid = false;
+    inf->files += 1;
 
+    bool valid = false;
     for (size_t i = 0; i < size; ) {
         char ch = text[i];
         if (ch == '\r' && i + 1 < size && text[i + 1] == '\n') {
@@ -74,15 +68,22 @@ void scan(const char *text, size_t size, COUNTINF *inf) {
         }
 
         if (ch == '\r' || ch == '\n') {
-            addup(inf, valid);
+            if (valid) {
+                inf->valid += 1;
+            } else {
+                inf->blank += 1;
+            }
             valid = false;
+
         } else if (ch != ' ' && ch != '\t') {
             valid = true;
         }
     }
 
     //count the last line.
-    addup(inf, valid);
+    if (valid) {
+        inf->valid += 1;
+    }
 }
 
 void accfil(COUNTINF *inf, const char *path) {
@@ -177,13 +178,15 @@ int main(int argc, const char *argv[]) {
         }
     }
 
+    int   files = inf.files;
     int   total = inf.valid + inf.blank;
     float vperc = total > 0 ? inf.valid / (float)total : 0;
     float bperc = total > 0 ? inf.blank / (float)total : 0;
     printf("\n");
-    printf("total lines:%5d\n", total);
-    printf("valid lines:%5d (%4.2f%%)\n", inf.valid, vperc);
-    printf("blank lines:%5d (%4.2f%%)\n", inf.blank, bperc);
+    printf("total files:%8d\n", files);
+    printf("total lines:%8d\n", total);
+    printf("valid lines:%8d (%4.2f%%)\n", inf.valid, vperc);
+    printf("blank lines:%8d (%4.2f%%)\n", inf.blank, bperc);
     printf("\n");
 
     return EXIT_SUCCESS;
