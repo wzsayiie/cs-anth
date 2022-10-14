@@ -4,8 +4,6 @@ bool iswcpat(const char *pat) {
     while (*pat) {
         if (*pat == '*' || *pat == '?') {
             return true;
-        } else if (*pat == '\\') {
-            pat += pat[1] ? 2 : 1;
         } else {
             pat += 1;
         }
@@ -17,6 +15,11 @@ bool iswcpat(const char *pat) {
 bool wcmatch(const char *pat, const char *str) {
     while (*pat && *str) {
         if (*pat == '*') {
+            //the "*" appears at the end.
+            if (!pat[1]) {
+                return true;
+            }
+
             bool m = false;
             int  s = 0;
             for (; str[s]; ++s) {
@@ -33,11 +36,11 @@ bool wcmatch(const char *pat, const char *str) {
                 break;
             }
 
-        } else if (*pat == '\\' && pat[1] == *str) {
-            pat += 2;
+        } else if (*pat == '?') {
+            pat += 1;
             str += 1;
 
-        } else if (*pat == '?' || *pat == *str) {
+        } else if (*pat == *str) {
             pat += 1;
             str += 1;
 
@@ -46,5 +49,5 @@ bool wcmatch(const char *pat, const char *str) {
         }
     }
 
-    return !*str && !*pat;
+    return !*pat && !*str;
 }

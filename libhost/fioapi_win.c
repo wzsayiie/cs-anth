@@ -9,7 +9,7 @@
 bool _h_fexists(const char *path, bool *isdir) {
     struct stat info;
     int  err = stat(path, &info);
-    bool dir = !err && (info.st_mode & S_IFMT == S_IFDIR);
+    bool dir = !err && (info.st_mode & S_IFMT) == S_IFDIR;
 
     if (isdir) {
         *isdir = dir;
