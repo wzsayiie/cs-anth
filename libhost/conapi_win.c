@@ -180,7 +180,7 @@ void _h_endrawmode(void) {
 
 int _h_readchar(void) {
     if (!_kbhit()) {
-        return C_NUL;
+        return K_NUL;
     }
 
     //in canonical mode.
@@ -196,12 +196,12 @@ int _h_readchar(void) {
 
     ReadConsoleInput(inh, &rec, 1, &num);
     if (rec.EventType != KEY_EVENT) {
-        return C_NUL;
+        return K_NUL;
     }
 
     KEY_EVENT_RECORD key = rec.Event.KeyEvent;
     if (!key.bKeyDown) {
-        return C_NUL;
+        return K_NUL;
     }
 
     DWORD modi = key.dwControlKeyState;
@@ -217,24 +217,24 @@ int _h_readchar(void) {
 
     //controls.
     if (!ctrl && !shft) {
-        if (code == VK_RETURN) { return C_ENTER; }
-        if (code == VK_TAB   ) { return C_TAB  ; }
-        if (code == VK_ESCAPE) { return C_ESC  ; }
-        if (code == VK_SPACE ) { return C_SPACE; }
-        if (code == VK_BACK  ) { return C_BACK ; }
+        if (code == VK_RETURN) { return K_ENTER; }
+        if (code == VK_TAB   ) { return K_TAB  ; }
+        if (code == VK_ESCAPE) { return K_ESC  ; }
+        if (code == VK_SPACE ) { return K_SPACE; }
+        if (code == VK_BACK  ) { return K_BACK ; }
     }
 
     //shift+tab.
     if (!ctrl && shft && code == VK_TAB) {
-        return C_SHIFT_TAB;
+        return K_SHIFT_TAB;
     }
 
     //arrows.
     if (!ctrl) {
-        if (code == VK_LEFT ) { return shft ? C_SHIFT_LEFT  : C_LEFT ; }
-        if (code == VK_UP   ) { return shft ? C_SHIFT_UP    : C_UP   ; }
-        if (code == VK_RIGHT) { return shft ? C_SHIFT_RIGHT : C_RIGHT; }
-        if (code == VK_DOWN ) { return shft ? C_SHIFT_DOWN  : C_DOWN ; }
+        if (code == VK_LEFT ) { return shft ? K_SHIFT_LEFT  : K_LEFT ; }
+        if (code == VK_UP   ) { return shft ? K_SHIFT_UP    : K_UP   ; }
+        if (code == VK_RIGHT) { return shft ? K_SHIFT_RIGHT : K_RIGHT; }
+        if (code == VK_DOWN ) { return shft ? K_SHIFT_DOWN  : K_DOWN ; }
     }
 
     //printables.
@@ -242,7 +242,7 @@ int _h_readchar(void) {
         return asci;
     }
 
-    return C_NUL;
+    return K_NUL;
 }
 
 //stduot & stderr:

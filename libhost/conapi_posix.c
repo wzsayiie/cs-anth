@@ -130,16 +130,16 @@ typedef struct _struct_KEYITEM {
 
 static KEYITEM _keylist[] = {
     //IMPORTANT: data need to sort.
-    { C_ESC        , "\e"      },
-    { C_SHIFT_UP   , "\e[1;2A" },
-    { C_SHIFT_DOWN , "\e[1;2B" },
-    { C_SHIFT_RIGHT, "\e[1;2C" },
-    { C_SHIFT_LEFT , "\e[1;2D" },
-    { C_UP         , "\e[A"    },
-    { C_DOWN       , "\e[B"    },
-    { C_RIGHT      , "\e[C"    },
-    { C_LEFT       , "\e[D"    },
-    { C_SHIFT_TAB  , "\e[Z"    },
+    { K_ESC        , "\e"      },
+    { K_SHIFT_UP   , "\e[1;2A" },
+    { K_SHIFT_DOWN , "\e[1;2B" },
+    { K_SHIFT_RIGHT, "\e[1;2C" },
+    { K_SHIFT_LEFT , "\e[1;2D" },
+    { K_UP         , "\e[A"    },
+    { K_DOWN       , "\e[B"    },
+    { K_RIGHT      , "\e[C"    },
+    { K_LEFT       , "\e[D"    },
+    { K_SHIFT_TAB  , "\e[Z"    },
 };
 
 typedef struct _struct_KEYRANGE {
@@ -180,7 +180,7 @@ static int readkeyseq() {
             if (found) {
                 return range.head->dst;
             } else {
-                return C_NUL;
+                return K_NUL;
             }
         }
 
@@ -189,10 +189,10 @@ static int readkeyseq() {
         if (found) {
             range.idx += 1;
         } else {
-            return C_NUL;
+            return K_NUL;
         }
     }
-    return C_NUL;
+    return K_NUL;
 }
 
 int _h_readchar(void) {
@@ -208,7 +208,7 @@ int _h_readchar(void) {
 
     //no more data.
     if (num != 1) {
-        return C_NUL;
+        return K_NUL;
     }
 
     //read a escape sequence.
@@ -222,17 +222,17 @@ int _h_readchar(void) {
     }
 
     //controls.
-    if (chr == C_ENTER) { return C_ENTER; }
-    if (chr == C_TAB  ) { return C_TAB  ; }
-    if (chr == C_SPACE) { return C_SPACE; }
-    if (chr == C_BACK ) { return C_BACK ; }
+    if (chr == K_ENTER) { return K_ENTER; }
+    if (chr == K_TAB  ) { return K_TAB  ; }
+    if (chr == K_SPACE) { return K_SPACE; }
+    if (chr == K_BACK ) { return K_BACK ; }
 
     //printables.
     if (isprint(chr)) {
         return chr;
     }
 
-    return C_NUL;
+    return K_NUL;
 }
 
 //stduot & stderr:
