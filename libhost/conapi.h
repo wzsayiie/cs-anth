@@ -8,23 +8,23 @@ __host void _h_getwinsize(int *width, int *height);
 __host void _h_stepcur   (int  stepx, int  stepy );
 __host void _h_showcur   (bool show);
 
-#define C_BLACK        0
-#define C_RED          1
-#define C_GREEN        2
-#define C_YELLOW       3
-#define C_BLUE         4
-#define C_PURPLE       5
-#define C_CYAN         6
-#define C_WHITE        7
-#define C_LIGHTBLACK   8
-#define C_LIGHTRED     9
-#define C_LIGHTGREEN  10
-#define C_LIGHTYELLOW 11
-#define C_LIGHTBLUE   12
-#define C_LIGHTPURPLE 13
-#define C_LIGHTCYAN   14
-#define C_LIGHTWHITE  15
-#define C_DEFCOLOR    16
+#define C_BLACK       ((int)  0)
+#define C_RED         ((int)  1)
+#define C_GREEN       ((int)  2)
+#define C_YELLOW      ((int)  3)
+#define C_BLUE        ((int)  4)
+#define C_PURPLE      ((int)  5)
+#define C_CYAN        ((int)  6)
+#define C_WHITE       ((int)  7)
+#define C_LIGHTBLACK  ((int)  8)
+#define C_LIGHTRED    ((int)  9)
+#define C_LIGHTGREEN  ((int) 10)
+#define C_LIGHTYELLOW ((int) 11)
+#define C_LIGHTBLUE   ((int) 12)
+#define C_LIGHTPURPLE ((int) 13)
+#define C_LIGHTCYAN   ((int) 14)
+#define C_LIGHTWHITE  ((int) 15)
+#define C_DEFCOLOR    ((int) 16)
 
 __host void _h_setforecolor(int  color);
 __host void _h_setbackcolor(int  color);
@@ -43,51 +43,51 @@ __host int _h_readchar(void);
 //in raw mode,
 //"readchar" possibly returns control characters followed:
 
-#define K_NUL         ((int)0x00)
+#define K_NUL         ((int)  0)
 
-#define K_CTRL_A      ((int)0x01)
-#define K_CTRL_B      ((int)0x02)
-#define K_CTRL_C      ((int)0x03)
-#define K_CTRL_D      ((int)0x04)
-#define K_CTRL_E      ((int)0x05)
-#define K_CTRL_F      ((int)0x06)
-#define K_CTRL_G      ((int)0x07)
-#define K_CTRL_H      ((int)0x08)
-#define K_CTRL_I      ((int)0x09)
-#define K_CTRL_J      ((int)0x0A)
-#define K_CTRL_K      ((int)0x0B)
-#define K_CTRL_L      ((int)0x0C)
-#define K_CTRL_M      ((int)0x0D)
-#define K_CTRL_N      ((int)0x0E)
-#define K_CTRL_O      ((int)0x0F)
-#define K_CTRL_P      ((int)0x10)
-#define K_CTRL_Q      ((int)0x11)
-#define K_CTRL_R      ((int)0x12)
-#define K_CTRL_S      ((int)0x13)
-#define K_CTRL_T      ((int)0x14)
-#define K_CTRL_U      ((int)0x15)
-#define K_CTRL_V      ((int)0x16)
-#define K_CTRL_W      ((int)0x17)
-#define K_CTRL_X      ((int)0x18)
-#define K_CTRL_Y      ((int)0x19)
-#define K_CTRL_Z      ((int)0x1A)
+#define K_CTRL_A      ((int)  1)
+#define K_CTRL_B      ((int)  2)
+#define K_CTRL_C      ((int)  3)
+#define K_CTRL_D      ((int)  4)
+#define K_CTRL_E      ((int)  5)
+#define K_CTRL_F      ((int)  6)
+#define K_CTRL_G      ((int)  7)
+#define K_CTRL_H      ((int)  8)
+#define K_CTRL_I      ((int)  9)
+#define K_CTRL_J      ((int) 10)
+#define K_CTRL_K      ((int) 11)
+#define K_CTRL_L      ((int) 12)
+#define K_CTRL_M      ((int) 13)
+#define K_CTRL_N      ((int) 14)
+#define K_CTRL_O      ((int) 15)
+#define K_CTRL_P      ((int) 16)
+#define K_CTRL_Q      ((int) 17)
+#define K_CTRL_R      ((int) 18)
+#define K_CTRL_S      ((int) 19)
+#define K_CTRL_T      ((int) 20)
+#define K_CTRL_U      ((int) 21)
+#define K_CTRL_V      ((int) 22)
+#define K_CTRL_W      ((int) 23)
+#define K_CTRL_X      ((int) 24)
+#define K_CTRL_Y      ((int) 25)
+#define K_CTRL_Z      ((int) 26)
 
 #define K_ENTER       K_CTRL_H
 #define K_TAB         K_CTRL_I
-#define K_ESC         ((int)0x1B)
-#define K_SPACE       ((int)0x20)
-#define K_BACK        ((int)0x7F)
+#define K_ESC         ((int) 27)
+#define K_SPACE       ((int) 32)
+#define K_BACK        ((int)127)
 
 //custom control character.
-#define K_SHIFT_TAB   ((int)0xD0)
-#define K_SHIFT_LEFT  ((int)0xD1)
-#define K_SHIFT_UP    ((int)0xD2)
-#define K_SHIFT_RIGHT ((int)0xD3)
-#define K_SHIFT_DOWN  ((int)0xD4)
-#define K_LEFT        ((int)0xD5)
-#define K_UP          ((int)0xD6)
-#define K_RIGHT       ((int)0xD7)
-#define K_DOWN        ((int)0xD8)
+#define K_SHIFT_TAB   ((int)224)
+#define K_SHIFT_LEFT  ((int)225)
+#define K_SHIFT_UP    ((int)226)
+#define K_SHIFT_RIGHT ((int)227)
+#define K_SHIFT_DOWN  ((int)228)
+#define K_LEFT        ((int)229)
+#define K_UP          ((int)230)
+#define K_RIGHT       ((int)231)
+#define K_DOWN        ((int)232)
 
 //stduot & stderr.
 __host void _h_writeout(const char *str);
