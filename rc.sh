@@ -1,20 +1,7 @@
 # shell configuration.
 if [ "$0" = "bash" ]; then
     export ANTH_HOME=$(cd $(dirname $BASH_SOURCE) && pwd)
-    export PS1="\033[32m\w \033[37m\$\033[0m "
-
-elif [ "$0" = "dash" ]; then
-    if [ "$ANTH_HOME" = "" ] || [ ! -e "$ANTH_HOME/rc.sh" ]; then
-        # can not get the directory of running script.
-        # need user to set ANTH_HOME manually.
-        echo "need to configure ANTH_HOME manually"
-        return
-    fi
-    export PS1="$(echo "\033[32m$PWD \033[37m\$\033[0m ")"
-
-elif [ "$0" = "ksh" ]; then
-    export ANTH_HOME=$(cd $(dirname ${.sh.file}) && pwd)
-    export PS1="$PWD \$ "
+    export PS1="\e[32m\w \e[37m\$\e[0m "
 
 else # zsh.
     export ANTH_HOME=$0:a:h
