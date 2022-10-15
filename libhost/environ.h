@@ -23,16 +23,14 @@
 #endif
 
 //which os:
-#if __FreeBSD__
-    #define OS_FBSD  1
+#if __linux__
+    #define OS_LINUX 1
 #elif __MACH__
     #define OS_MAC   1
-#elif __linux__
-    #define OS_LINUX 1
 #elif _WIN32
     #define OS_WIN   1
 #else
     #error "unknown os."
 #endif
 
-#define OS_POSIX (OS_FBSD || OS_MAC || OS_LINUX)
+#define OS_POSIX (OS_LINUX || OS_MAC)
