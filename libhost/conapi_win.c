@@ -68,7 +68,7 @@ static void setprtattr(WORD mask, WORD value) {
     SetConsoleTextAttribute(outh, attr);
 }
 
-void _h_setforecolor(int color) {
+void _h_setforecolor(ccolor color) {
     recordprtattr();
 
     static WORD code[C_DEFCOLOR] = {0};
@@ -101,7 +101,7 @@ void _h_setforecolor(int color) {
     }
 }
 
-void _h_setbackcolor(int color) {
+void _h_setbackcolor(ccolor color) {
     recordprtattr();
 
     static WORD code[C_DEFCOLOR] = {0};
@@ -178,7 +178,7 @@ void _h_endrawmode(void) {
     SetConsoleMode(inh, _canonmode);
 }
 
-int _h_readchar(void) {
+int _h_readkey(void) {
     if (!_kbhit()) {
         return K_NUL;
     }
@@ -247,10 +247,24 @@ int _h_readchar(void) {
 
 //stduot & stderr:
 
-void _h_writeout(const char *str) {
-    fprintf(stdout, "%s", str);
+void _h_writeout(const char *str, int num) {
+    HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD  writ = 0;
+    WriteConsole(outh, str, (DWORD)num, &writ, NULL);
 }
 
-void _h_writeerr(const char *str) {
-    fprintf(stderr, "%s", str);
+void _h_flushout(void) {
+    HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
+    FlushFileBuffers(outh);
+}
+
+void _h_writeerr(const char *str, int num) {
+    HANDLE errh = GetStdHandle(STD_ERROR_HANDLE);
+    DWORD  writ = 0;
+    WriteConsole(errh, str, (DWORD)num, &writ, NULL);
+}
+
+void _h_flusherr(void) {
+    HANDLE errh = GetStdHandle(STD_ERROR_HANDLE);
+    FlushFileBuffers(errh);
 }

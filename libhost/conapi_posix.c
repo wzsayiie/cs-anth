@@ -28,7 +28,7 @@ void _h_showcur(bool show) {
     printf(show ? "\e[?25h" : "\e[?25l");
 }
 
-void _h_setforecolor(int color) {
+void _h_setforecolor(ccolor color) {
     static const int code[C_DEFCOLOR + 1] = {
         [C_BLACK      ] = 30,
         [C_RED        ] = 31,
@@ -56,7 +56,7 @@ void _h_setforecolor(int color) {
     }
 }
 
-void _h_setbackcolor(int color) {
+void _h_setbackcolor(ccolor color) {
     static const int code[C_DEFCOLOR + 1] = {
         [C_BLACK      ] =  40,
         [C_RED        ] =  41,
@@ -124,7 +124,7 @@ void _h_endrawmode(void) {
 }
 
 typedef struct _struct_KEYITEM {
-    int         dst;
+    ckey        dst;
     const char *seq;
 } KEYITEM;
 
@@ -195,7 +195,7 @@ static int readkeyseq() {
     return K_NUL;
 }
 
-int _h_readchar(void) {
+int _h_readkey(void) {
     //in canonical mode.
     if (!_israw) {
         return getchar();
@@ -237,10 +237,18 @@ int _h_readchar(void) {
 
 //stduot & stderr:
 
-void _h_writeout(const char *str) {
-    fprintf(stdout, "%s", str);
+void _h_writeout(const char *str, int num) {
+    write(STDOUT_FILENO, str, (size_t)num);
 }
 
-void _h_writeerr(const char *str) {
-    fprintf(stderr, "%s", str);
+void _h_flushout(void) {
+    fflush(stdout);
+}
+
+void _h_writeerr(const char *str, int num) {
+    write(STDERR_FILENO, str, (size_t)num);
+}
+
+void _h_flusherr(void) {
+    fflush(stderr);
 }
