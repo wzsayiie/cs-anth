@@ -73,5 +73,5 @@ _DEF_INT_CMP(umaxz , uminz , size_t            )
 /**/        return v;                                   \
 /**/    }
 
-_DEF_VEC(CFLT2, CFLT3, CFLT4, mkflt2, mkflt3, mkflt4, float)
-_DEF_VEC(CINT2, CINT3, CINT4, mkint2, mkint3, mkint4, int  )
+_DEF_VEC(CFLOAT2, CFLOAT3, CFLOAT4, mkfloat2, mkfloat3, mkfloat4, float)
+_DEF_VEC(CINT2  , CINT3  , CINT4  , mkint2  , mkint3  , mkint4  , int  )
