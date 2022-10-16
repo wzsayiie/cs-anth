@@ -78,11 +78,11 @@ bool _h_denter(const char *path) {
     return !err;
 }
 
-ADIR *_h_dopen(const char *path) {
-    return (ADIR *)opendir(path);
+CDIR *_h_dopen(const char *path) {
+    return (CDIR *)opendir(path);
 }
 
-char *_h_dcopy(ADIR *dir) {
+char *_h_dcopy(CDIR *dir) {
     struct dirent *ent = readdir((DIR *)dir);
     if (ent) {
         return strdup(ent->d_name);
@@ -90,6 +90,6 @@ char *_h_dcopy(ADIR *dir) {
     return NULL;
 }
 
-void _h_dclose(ADIR *dir) {
+void _h_dclose(CDIR *dir) {
     closedir((DIR *)dir);
 }

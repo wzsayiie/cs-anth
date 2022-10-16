@@ -15,28 +15,28 @@ bool _h_remove(const char *path) {
 
 //files read & write:
 
-AFILE *_h_fopen(const char *path, const char *mode) {
-    return (AFILE *)fopen(path, mode);
+CFILE *_h_fopen(const char *path, const char *mode) {
+    return (CFILE *)fopen(path, mode);
 }
 
-bool _h_fclose(AFILE *file) {
+bool _h_fclose(CFILE *file) {
     int err = fclose((FILE *)file);
     return !err;
 }
 
-size_t _h_fread(void *buf, size_t isz, size_t inum, AFILE *file) {
+size_t _h_fread(void *buf, size_t isz, size_t inum, CFILE *file) {
     return fread(buf, isz, inum, (FILE *)file);
 }
 
-size_t _h_fwrite(const void *ptr, size_t isz, size_t inum, AFILE *file) {
+size_t _h_fwrite(const void *ptr, size_t isz, size_t inum, CFILE *file) {
     return fwrite(ptr, isz, inum, (FILE *)file);
 }
 
-bool _h_fseek(AFILE *file, long offset, int seekbase) {
+bool _h_fseek(CFILE *file, long offset, int seekbase) {
     int err = fseek((FILE *)file, offset, seekbase);
     return !err;
 }
 
-long _h_ftell(AFILE *file) {
+long _h_ftell(CFILE *file) {
     return ftell((FILE *)file);
 }

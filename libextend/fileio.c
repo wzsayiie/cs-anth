@@ -57,7 +57,7 @@ char **dcopyitems(const char *path, int *num) {
     //allocate number at a time.
     const size_t ONCE_ALLOC_N = 16;
 
-    ADIR *dir = dopen(path);
+    CDIR *dir = dopen(path);
     if (!dir) {
         *num = 0;
         return NULL;

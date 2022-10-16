@@ -66,13 +66,13 @@ bool _h_denter(const char *path) {
     return !err;
 }
 
-struct _struct_ADIR {
+struct _struct_CDIR {
     HANDLE           handle;
     WIN32_FIND_DATAA dat   ;
     bool             first ;
 };
 
-ADIR *_h_dopen(const char *path) {
+CDIR *_h_dopen(const char *path) {
     size_t plen = strlen(path);
     char  *name = malloc(plen + 3);
     strcpy(name, path);
@@ -82,7 +82,7 @@ ADIR *_h_dopen(const char *path) {
         strcpy(name + plen, "*");
     }
 
-    ADIR *dir   = calloc(1, sizeof(ADIR));
+    CDIR *dir   = calloc(1, sizeof(CDIR));
     dir->handle = FindFirstFileA(name, &dir->dat);
     dir->first  = true;
 
@@ -95,7 +95,7 @@ ADIR *_h_dopen(const char *path) {
     return dir;
 }
 
-char *_h_dcopy(ADIR *dir) {
+char *_h_dcopy(CDIR *dir) {
     if (dir->first) {
         dir->first = false;
         return strdup(dir->dat.cFileName);
@@ -109,7 +109,7 @@ char *_h_dcopy(ADIR *dir) {
     return NULL;
 }
 
-void _h_dclose(ADIR *dir) {
+void _h_dclose(CDIR *dir) {
     FindClose(dir->handle);
     free(dir);
 }
