@@ -4,35 +4,22 @@ setlocal
 
 cd %~dp0
 
-:: create library directories.
+:: directories.
 if not exist bin ( md bin )
 if not exist lib ( md lib )
 
-:: build libraries:
+:: host.dll.
 cl  /nologo /LD /Fe"lib\host.dll" /I"libhost" libhost\*_all.c libhost\*_win.c
 del *.obj
 
+:: extend.lib.
 cl  /nologo /c /I"libextend" /I"libhost" /I"libspec" libextend\*.c
 lib /nologo /out:lib\extend.lib *.obj
 del *.obj
 
+:: spec.lib.
 cl  /nologo /c /I"libextend" /I"libhost" /I"libspec" libspec\*.c
 lib /nologo /out:lib\spec.lib *.obj
-del *.obj
-
-:: build cmdsh:
-copy lib\host.dll host.dll
-
-cl  /nologo        ^
-    /Fe"cmdsh"     ^
-    /I"libextend"  ^
-    /I"libhost"    ^
-    /I"libspec"    ^
-    lib\extend.lib ^
-    lib\host.lib   ^
-    lib\spec.lib   ^
-    cmdsh.c
-
 del *.obj
 
 endlocal

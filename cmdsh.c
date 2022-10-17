@@ -1,31 +1,29 @@
-#include "fileio.h"
-#include "libgen.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include "strex.h"
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define BUF_SIZE 128
-#define BAT_FILE "cmdsh.bat"
+int main(int argc, const char *argv[]) {
+    //get directory:
+    char  *dir  = strdup(argv[0]);
+    size_t dlen = strlen(dir);
 
-int main() {
-    //get the bat file.
-    char path[BUF_SIZE];
-    getexepath(path, BUF_SIZE);
-
-    dirname(path);
-    pathcat(path, BAT_FILE);
-
-    //check if the bat file exists.
-    if (!fexists(path, NULL)) {
-        printf("not found bat file '%s'\n", BAT_FILE);
-        system("pause");
-        return 1;
+    while (true) {
+        if (dlen == 0 || dir[dlen - 1] == '\\') {
+            dir[dlen] = '\0';
+            break;
+        }
+        dlen -= 1;
     }
 
-    //execute.
-    char cmdln[BUF_SIZE] = "cmd /k ";
-    strcat(cmdln, path);
-    system(cmdln);
+    //execute command.
+    char  f[] = "cmd /k \"%scmdsh.bat\"";
+    char *cmd = malloc(dlen + sizeof(f));
+    sprintf(cmd, f, dir);
 
-    return 0;
+    system(cmd);
+
+    //clear.
+    free(dir);
+    free(cmd);
 }
