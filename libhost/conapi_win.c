@@ -1,7 +1,7 @@
 #include "conapi.h"
+#include "Windows.h"
 #include "ctype.h"
 #include "stdio.h"
-#include "windows.h"
 
 //console window:
 

@@ -1,6 +1,6 @@
 #include "osapi.h"
+#include "Windows.h"
 #include "sys/timeb.h"
-#include "windows.h"
 
 void _h_sleepmilli(long long milli) {
     Sleep((DWORD)milli);
