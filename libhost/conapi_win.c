@@ -3,7 +3,7 @@
 #include "ctype.h"
 #include "stdio.h"
 
-//console window:
+//window infomation:
 
 void _h_getwinsize(int *width, int *height) {
     HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -34,6 +34,98 @@ void _h_showcur(bool show) {
     info.bVisible = (BOOL)show;
     SetConsoleCursorInfo(outh, &info);
 }
+
+//stdin:
+
+static bool  _israwin  = false;
+static DWORD _canondat = 0;
+
+void _h_beginrawin(void) {
+    HANDLE inh = GetStdHandle(STD_INPUT_HANDLE);
+
+    //record data of canonical input mode.
+    GetConsoleMode(inh, &_canondat);
+
+    //set flags for raw input mode.
+    _israwin = true;
+    SetConsoleMode(inh, ENABLE_WINDOW_INPUT);
+}
+
+void _h_endrawin(void) {
+    HANDLE inh = GetStdHandle(STD_INPUT_HANDLE);
+    SetConsoleMode(inh, _canondat);
+
+    _israwin = false;
+}
+
+int _h_readkey(void) {
+    if (!_kbhit()) {
+        return K_NUL;
+    }
+
+    //in canonical input mode.
+    if (!_israwin) {
+        return getchar();
+    }
+
+    //in raw input model:
+
+    HANDLE       inh = GetStdHandle(STD_INPUT_HANDLE);
+    INPUT_RECORD rec ;
+    DWORD        num = 0;
+
+    ReadConsoleInput(inh, &rec, 1, &num);
+    if (rec.EventType != KEY_EVENT) {
+        return K_NUL;
+    }
+
+    KEY_EVENT_RECORD key = rec.Event.KeyEvent;
+    if (!key.bKeyDown) {
+        return K_NUL;
+    }
+
+    DWORD modi = key.dwControlKeyState;
+    bool  ctrl = (modi & LEFT_CTRL_PRESSED) || (modi & RIGHT_CTRL_PRESSED);
+    bool  shft = modi & SHIFT_PRESSED;
+    WORD  code = key.wVirtualKeyCode;
+    char  asci = key.uChar.AsciiChar;
+
+    //ctrl+a ~ ctrl+z.
+    if (ctrl && !shft && 'A' <= code && code <= 'Z') {
+        return code - 'A' + 1;
+    }
+
+    //controls.
+    if (!ctrl && !shft) {
+        if (code == VK_RETURN) { return K_ENTER; }
+        if (code == VK_TAB   ) { return K_TAB  ; }
+        if (code == VK_ESCAPE) { return K_ESC  ; }
+        if (code == VK_SPACE ) { return K_SPACE; }
+        if (code == VK_BACK  ) { return K_BACK ; }
+    }
+
+    //shift+tab.
+    if (!ctrl && shft && code == VK_TAB) {
+        return K_SHIFT_TAB;
+    }
+
+    //arrows.
+    if (!ctrl) {
+        if (code == VK_LEFT ) { return shft ? K_SHIFT_LEFT  : K_LEFT ; }
+        if (code == VK_UP   ) { return shft ? K_SHIFT_UP    : K_UP   ; }
+        if (code == VK_RIGHT) { return shft ? K_SHIFT_RIGHT : K_RIGHT; }
+        if (code == VK_DOWN ) { return shft ? K_SHIFT_DOWN  : K_DOWN ; }
+    }
+
+    //printables.
+    if (isprint(asci)) {
+        return asci;
+    }
+
+    return K_NUL;
+}
+
+//stduot & stderr:
 
 #define FORE_MASK (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY)
 #define BACK_MASK (BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_INTENSITY)
@@ -154,98 +246,6 @@ void _h_resetprtattr(void) {
 
     _attrrec = false;
 }
-
-//stdin:
-
-static bool  _israwmode = false;
-static DWORD _canonmode = 0;
-
-void _h_beginrawmode(void) {
-    HANDLE inh = GetStdHandle(STD_INPUT_HANDLE);
-
-    //record flags in canonical mode.
-    _israwmode = true;
-    GetConsoleMode(inh, &_canonmode);
-
-    //enable raw key input.
-    SetConsoleMode(inh, ENABLE_WINDOW_INPUT);
-}
-
-void _h_endrawmode(void) {
-    HANDLE inh = GetStdHandle(STD_INPUT_HANDLE);
-
-    _israwmode = false;
-    SetConsoleMode(inh, _canonmode);
-}
-
-int _h_readkey(void) {
-    if (!_kbhit()) {
-        return K_NUL;
-    }
-
-    //in canonical mode.
-    if (!_israwmode) {
-        return getchar();
-    }
-
-    //in raw model:
-
-    HANDLE       inh = GetStdHandle(STD_INPUT_HANDLE);
-    INPUT_RECORD rec ;
-    DWORD        num = 0;
-
-    ReadConsoleInput(inh, &rec, 1, &num);
-    if (rec.EventType != KEY_EVENT) {
-        return K_NUL;
-    }
-
-    KEY_EVENT_RECORD key = rec.Event.KeyEvent;
-    if (!key.bKeyDown) {
-        return K_NUL;
-    }
-
-    DWORD modi = key.dwControlKeyState;
-    bool  ctrl = (modi & LEFT_CTRL_PRESSED) || (modi & RIGHT_CTRL_PRESSED);
-    bool  shft = modi & SHIFT_PRESSED;
-    WORD  code = key.wVirtualKeyCode;
-    char  asci = key.uChar.AsciiChar;
-
-    //ctrl+a ~ ctrl+z.
-    if (ctrl && !shft && 'A' <= code && code <= 'Z') {
-        return code - 'A' + 1;
-    }
-
-    //controls.
-    if (!ctrl && !shft) {
-        if (code == VK_RETURN) { return K_ENTER; }
-        if (code == VK_TAB   ) { return K_TAB  ; }
-        if (code == VK_ESCAPE) { return K_ESC  ; }
-        if (code == VK_SPACE ) { return K_SPACE; }
-        if (code == VK_BACK  ) { return K_BACK ; }
-    }
-
-    //shift+tab.
-    if (!ctrl && shft && code == VK_TAB) {
-        return K_SHIFT_TAB;
-    }
-
-    //arrows.
-    if (!ctrl) {
-        if (code == VK_LEFT ) { return shft ? K_SHIFT_LEFT  : K_LEFT ; }
-        if (code == VK_UP   ) { return shft ? K_SHIFT_UP    : K_UP   ; }
-        if (code == VK_RIGHT) { return shft ? K_SHIFT_RIGHT : K_RIGHT; }
-        if (code == VK_DOWN ) { return shft ? K_SHIFT_DOWN  : K_DOWN ; }
-    }
-
-    //printables.
-    if (isprint(asci)) {
-        return asci;
-    }
-
-    return K_NUL;
-}
-
-//stduot & stderr:
 
 void _h_writeout(const char *str, int num) {
     HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);

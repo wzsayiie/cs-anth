@@ -3,47 +3,22 @@
 #include "condition.h"
 #include "stdbool.h"
 
-//console window:
+//window infomation.
 __host void _h_getwinsize(int *width, int *height);
 __host void _h_stepcur   (int  stepx, int  stepy );
 __host void _h_showcur   (bool show);
 
-typedef enum _enum_ccolor {
-    C_BLACK       =  0,
-    C_RED         =  1,
-    C_GREEN       =  2,
-    C_YELLOW      =  3,
-    C_BLUE        =  4,
-    C_PURPLE      =  5,
-    C_CYAN        =  6,
-    C_WHITE       =  7,
-    C_LIGHTBLACK  =  8,
-    C_LIGHTRED    =  9,
-    C_LIGHTGREEN  = 10,
-    C_LIGHTYELLOW = 11,
-    C_LIGHTBLUE   = 12,
-    C_LIGHTPURPLE = 13,
-    C_LIGHTCYAN   = 14,
-    C_LIGHTWHITE  = 15,
-    C_DEFCOLOR    = 16,
-} ccolor;
-
-__host void _h_setforecolor(ccolor color);
-__host void _h_setbackcolor(ccolor color);
-__host void _h_setunderline(bool   under);
-__host void _h_resetprtattr(void);
-
 //stdin:
 
-__host void _h_beginrawmode(void);
-__host void _h_endrawmode  (void);
+__host void _h_beginrawin(void);
+__host void _h_endrawin  (void);
 
-//in canonical mode, this function do not return until the user pressed the enter key.
-//in raw mode, this function is non-blocking. if no data in stdin, it will return 0.
+//in canonical input mode, this function does not return until an enter key pressed.
+//in raw input mode, this function is non-blocking. if no data in stdin, it will return 0.
 __host int _h_readkey(void);
 
-//in raw mode,
-//"readchar" possibly returns control characters followed.
+//in raw input mode,
+//"readkey()" possibly returns control characters followed.
 typedef enum _enum_ckey {
     K_NUL    =  0,
 
@@ -94,6 +69,32 @@ typedef enum _enum_ckey {
 } ckey;
 
 //stduot & stderr:
+
+typedef enum _enum_ccolor {
+    C_BLACK       =  0,
+    C_RED         =  1,
+    C_GREEN       =  2,
+    C_YELLOW      =  3,
+    C_BLUE        =  4,
+    C_PURPLE      =  5,
+    C_CYAN        =  6,
+    C_WHITE       =  7,
+    C_LIGHTBLACK  =  8,
+    C_LIGHTRED    =  9,
+    C_LIGHTGREEN  = 10,
+    C_LIGHTYELLOW = 11,
+    C_LIGHTBLUE   = 12,
+    C_LIGHTPURPLE = 13,
+    C_LIGHTCYAN   = 14,
+    C_LIGHTWHITE  = 15,
+    C_DEFCOLOR    = 16,
+} ccolor;
+
+__host void _h_setforecolor(ccolor color);
+__host void _h_setbackcolor(ccolor color);
+__host void _h_setunderline(bool   under);
+__host void _h_resetprtattr(void);
+
 __host void _h_writeout(const char *str, int num);
 __host void _h_flushout(void);
 

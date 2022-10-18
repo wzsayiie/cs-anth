@@ -6,7 +6,7 @@
 #include "termios.h"
 #include "unistd.h"
 
-//console window:
+//window information:
 
 void _h_getwinsize(int *width, int *height) {
     struct winsize size;
@@ -28,83 +28,19 @@ void _h_showcur(bool show) {
     printf(show ? "\e[?25h" : "\e[?25l");
 }
 
-void _h_setforecolor(ccolor color) {
-    static const int code[C_DEFCOLOR + 1] = {
-        [C_BLACK      ] = 30,
-        [C_RED        ] = 31,
-        [C_GREEN      ] = 32,
-        [C_YELLOW     ] = 33,
-        [C_BLUE       ] = 34,
-        [C_PURPLE     ] = 35,
-        [C_CYAN       ] = 36,
-        [C_WHITE      ] = 37,
-
-        [C_LIGHTBLACK ] = 90,
-        [C_LIGHTRED   ] = 91,
-        [C_LIGHTGREEN ] = 92,
-        [C_LIGHTYELLOW] = 93,
-        [C_LIGHTBLUE  ] = 94,
-        [C_LIGHTPURPLE] = 95,
-        [C_LIGHTCYAN  ] = 96,
-        [C_LIGHTWHITE ] = 97,
-
-        [C_DEFCOLOR   ] = 39,
-    };
-
-    if (0 <= color && color <= C_DEFCOLOR) {
-        printf("\e[%dm", code[color]);
-    }
-}
-
-void _h_setbackcolor(ccolor color) {
-    static const int code[C_DEFCOLOR + 1] = {
-        [C_BLACK      ] =  40,
-        [C_RED        ] =  41,
-        [C_GREEN      ] =  42,
-        [C_YELLOW     ] =  43,
-        [C_BLUE       ] =  44,
-        [C_PURPLE     ] =  45,
-        [C_CYAN       ] =  46,
-        [C_WHITE      ] =  47,
-
-        [C_LIGHTBLACK ] = 100,
-        [C_LIGHTRED   ] = 101,
-        [C_LIGHTGREEN ] = 102,
-        [C_LIGHTYELLOW] = 103,
-        [C_LIGHTBLUE  ] = 104,
-        [C_LIGHTPURPLE] = 105,
-        [C_LIGHTCYAN  ] = 106,
-        [C_LIGHTWHITE ] = 107,
-
-        [C_DEFCOLOR   ] =  49,
-    };
-
-    if (0 <= color && color <= C_DEFCOLOR) {
-        printf("\e[%dm", code[color]);
-    }
-}
-
-void _h_setunderline(bool under) {
-    printf(under ? "\e[4m" : "\e[24m");
-}
-
-void _h_resetprtattr(void) {
-    printf("\e[0m");
-}
-
 //stdin:
 
-static bool           _israw = false;
-static struct termios _canon ;
+static bool           _israwin = false;
+static struct termios _canondat;
 
-void _h_beginrawmode(void) {
-    //record flags in canonical mode.
-    tcgetattr(STDIN_FILENO, &_canon);
+void _h_beginrawin(void) {
+    //record flags of canonical input mode.
+    tcgetattr(STDIN_FILENO, &_canondat);
 
-    //set flags for raw mode:
-    _israw = true;
+    //set flags for raw input mode:
+    _israwin = true;
 
-    struct termios raw = _canon;
+    struct termios raw = _canondat;
     raw.c_lflag &= ~ICANON; //disable canonical.
     raw.c_lflag &= ~ECHO  ; //disable echo.
     raw.c_lflag &= ~ISIG  ; //disable interrupt(ctrl+c) and stop(ctrl+z) signals.
@@ -118,9 +54,9 @@ void _h_beginrawmode(void) {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 }
 
-void _h_endrawmode(void) {
-    _israw = false;
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &_canon);
+void _h_endrawin(void) {
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &_canondat);
+    _israwin = false;
 }
 
 typedef struct _struct_KEYITEM {
@@ -196,12 +132,12 @@ static int readkeyseq() {
 }
 
 int _h_readkey(void) {
-    //in canonical mode.
-    if (!_israw) {
+    //in canonical input mode.
+    if (!_israwin) {
         return getchar();
     }
 
-    //in raw mode:
+    //in raw input mode:
 
     char    chr = 0;
     ssize_t num = read(STDIN_FILENO, &chr, 1);
@@ -236,6 +172,70 @@ int _h_readkey(void) {
 }
 
 //stduot & stderr:
+
+void _h_setforecolor(ccolor color) {
+    static const int code[C_DEFCOLOR + 1] = {
+        [C_BLACK      ] = 30,
+        [C_RED        ] = 31,
+        [C_GREEN      ] = 32,
+        [C_YELLOW     ] = 33,
+        [C_BLUE       ] = 34,
+        [C_PURPLE     ] = 35,
+        [C_CYAN       ] = 36,
+        [C_WHITE      ] = 37,
+
+        [C_LIGHTBLACK ] = 90,
+        [C_LIGHTRED   ] = 91,
+        [C_LIGHTGREEN ] = 92,
+        [C_LIGHTYELLOW] = 93,
+        [C_LIGHTBLUE  ] = 94,
+        [C_LIGHTPURPLE] = 95,
+        [C_LIGHTCYAN  ] = 96,
+        [C_LIGHTWHITE ] = 97,
+
+        [C_DEFCOLOR   ] = 39,
+    };
+
+    if (0 <= color && color <= C_DEFCOLOR) {
+        printf("\e[%dm", code[color]);
+    }
+}
+
+void _h_setbackcolor(ccolor color) {
+    static const int code[C_DEFCOLOR + 1] = {
+        [C_BLACK      ] =  40,
+        [C_RED        ] =  41,
+        [C_GREEN      ] =  42,
+        [C_YELLOW     ] =  43,
+        [C_BLUE       ] =  44,
+        [C_PURPLE     ] =  45,
+        [C_CYAN       ] =  46,
+        [C_WHITE      ] =  47,
+
+        [C_LIGHTBLACK ] = 100,
+        [C_LIGHTRED   ] = 101,
+        [C_LIGHTGREEN ] = 102,
+        [C_LIGHTYELLOW] = 103,
+        [C_LIGHTBLUE  ] = 104,
+        [C_LIGHTPURPLE] = 105,
+        [C_LIGHTCYAN  ] = 106,
+        [C_LIGHTWHITE ] = 107,
+
+        [C_DEFCOLOR   ] =  49,
+    };
+
+    if (0 <= color && color <= C_DEFCOLOR) {
+        printf("\e[%dm", code[color]);
+    }
+}
+
+void _h_setunderline(bool under) {
+    printf(under ? "\e[4m" : "\e[24m");
+}
+
+void _h_resetprtattr(void) {
+    printf("\e[0m");
+}
 
 void _h_writeout(const char *str, int num) {
     write(STDOUT_FILENO, str, (size_t)num);
