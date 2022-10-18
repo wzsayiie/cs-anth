@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define CMD_TL "cmd /k \"%scmdtty.bat\""
+
 int main(int argc, const char *argv[]) {
-    //get directory:
     char  *dir  = strdup(argv[0]);
     size_t dlen = strlen(dir);
-
     while (true) {
         if (dlen == 0 || dir[dlen - 1] == '\\') {
             dir[dlen] = '\0';
@@ -16,14 +16,10 @@ int main(int argc, const char *argv[]) {
         dlen -= 1;
     }
 
-    //execute command.
-    char  f[] = "cmd /k \"%scmdtty.bat\"";
-    char *cmd = malloc(dlen + sizeof(f));
-    sprintf(cmd, f, dir);
+    char *cmd = malloc(dlen + sizeof(CMD_TL));
+    sprintf(cmd, CMD_TL, dir);
+    free(dir);
 
     system(cmd);
-
-    //clear.
-    free(dir);
     free(cmd);
 }
