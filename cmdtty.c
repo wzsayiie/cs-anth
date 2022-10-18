@@ -20,6 +20,8 @@ int main(int argc, const char *argv[]) {
     sprintf(cmd, CMD_TL, dir);
     free(dir);
 
+    //execute the command.
     system(cmd);
+
     free(cmd);
 }
