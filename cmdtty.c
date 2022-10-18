@@ -17,7 +17,7 @@ int main(int argc, const char *argv[]) {
     }
 
     //execute command.
-    char  f[] = "cmd /k \"%scmdsh.bat\"";
+    char  f[] = "cmd /k \"%scmdtty.bat\"";
     char *cmd = malloc(dlen + sizeof(f));
     sprintf(cmd, f, dir);
 
