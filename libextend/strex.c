@@ -18,6 +18,15 @@ bool endswith(const char *str, const char *suf) {
     return 0;
 }
 
+char *strcut(const char *str, size_t len) {
+    char *cpy = malloc(len);
+
+    strncmp(cpy, str, len);
+    cpy[len - 1] = '\0';
+
+    return cpy;
+}
+
 //path string:
 
 bool ispathsep(char ch) {
