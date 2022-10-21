@@ -1,5 +1,6 @@
 #include "strex.h"
 #include "environ.h"
+#include "stdlib.h"
 
 //string:
 
