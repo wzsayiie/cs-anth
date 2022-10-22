@@ -9,10 +9,11 @@
 __libf bool startswith(const char *str, const char *pre);
 __libf bool endswith  (const char *str, const char *suf);
 
-//string truncation. the returned value need to free.
-__libf char *strcut(const char *str, size_t len);
+//the function is the same as "strndup()" from c23.
+//now ms-cl does not support the latter.
+__libf char *stridup(const char *str, size_t len);
 
-//path string:
+//path:
 
 __libf bool ispathsep(char ch);
 

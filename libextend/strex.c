@@ -19,11 +19,11 @@ bool endswith(const char *str, const char *suf) {
     return 0;
 }
 
-char *strcut(const char *str, size_t len) {
-    char *cpy = malloc(len);
+char *stridup(const char *str, size_t len) {
+    char *cpy = malloc(len + 1);
 
-    strncmp(cpy, str, len);
-    cpy[len - 1] = '\0';
+    strncpy(cpy, str, len);
+    cpy[len] = '\0';
 
     return cpy;
 }
