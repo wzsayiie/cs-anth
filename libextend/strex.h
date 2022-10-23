@@ -17,5 +17,9 @@ __libf char *stridup(const char *str, size_t len);
 
 __libf bool ispathsep(char ch);
 
-__libf char *pathcat(char *dir, const char *base);
+//"dirname()" and "basename()" have different behaviours on different systems.
+__libf char *pathbase(const char *path);
+__libf char *pathdir (char       *path);
+
+__libf char *pathcat(char *dir , const char *base);
 __libf char *pathtid(char *path);

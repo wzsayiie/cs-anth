@@ -67,7 +67,7 @@ char **wccopyfiles(const char *pat, int *num) {
     }
 
     char *dir = strdup(pat);
-    dirname(dir);
+    pathdir(dir);
 
     //wildcards in directory path is unsupported.
     if (iswcpat(dir)) {
@@ -91,9 +91,8 @@ char **wccopyfiles(const char *pat, int *num) {
     char **files = NULL;
     *num = 0;
 
-    size_t dlen = strlen(dir);
-    char  *base = strdup(pat);
-    basename(base);
+    const char *base = pathbase(pat);
+    size_t      dlen = strlen(dir);
 
     for (int i = 0; i < candnum; ++i) {
         char *cand = candids[i];
@@ -112,7 +111,6 @@ char **wccopyfiles(const char *pat, int *num) {
     }
 
     dfreeitems(candids, candnum);
-    free(base);
     free(dir);
 
     return files;

@@ -28,7 +28,9 @@ char *stridup(const char *str, size_t len) {
     return cpy;
 }
 
-//path string:
+//path:
+
+static const char SEP = '/';
 
 bool ispathsep(char ch) {
 #if OS_WIN
@@ -38,11 +40,63 @@ bool ispathsep(char ch) {
 #endif
 }
 
+char *pathbase(const char *path) {
+    //skip separators at the end.
+    const char *it = path + strlen(path) - 1;
+    while (it >= path && ispathsep(*it)) {
+        it -= 1;
+    }
+
+    //"\0" or all characters are separators.
+    if (it == path - 1) {
+        return (char *)path;
+    }
+
+    while (it > path && !ispathsep(it[-1])) {
+        it -= 1;
+    }
+    return (char *)it;
+}
+
+char *pathdir(char *path) {
+    char *it = path + strlen(path) - 1;
+
+    //path is "\0".
+    if (it == path - 1) {
+        return path;
+    }
+
+    //skip all separators at the end.
+    while (it >= path && ispathsep(*it)) {
+        it -= 1;
+    }
+    //if all characters are separators.
+    if (it == path - 1) {
+        *path = '\0';
+        return path;
+    }
+
+    while (it >= path && !ispathsep(*it)) {
+        it -= 1;
+    }
+    
+    if (it == path -1) {
+        //only base.
+        path[0] = '\0';
+    } else if (it == path) {
+        //like "/xx", should return "/".
+        path[1] = '\0';
+    } else {
+        *it = '\0';
+    }
+    return path;
+}
+
 char *pathcat(char *dir, const char *base) {
     char *it = dir + strlen(dir);
 
     if (it >= dir + 1 && !ispathsep(it[-1])) {
-        *it++ = '/';
+        *it++ = SEP;
     }
     strcpy(it, base);
 
@@ -56,11 +110,11 @@ char *pathtid(char *path) {
     for (char *src = path; *src; ++src) {
         if (!ispathsep(*src)) {
             lastsep = false;
-            *dst++ = *src;
+            *dst++  = *src ;
 
         } else if (!lastsep) {
             lastsep = true;
-            *dst++ = '/';
+            *dst++  = SEP ;
         }
     }
 
