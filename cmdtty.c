@@ -8,15 +8,12 @@
 int main(int argc, const char *argv[]) {
     char  *dir  = strdup(argv[0]);
     size_t dlen = strlen(dir);
-    while (true) {
-        if (dlen == 0 || dir[dlen - 1] == '\\') {
-            dir[dlen] = '\0';
-            break;
-        }
+    while (dlen > 0 && dir[dlen - 1] != '\\') {
         dlen -= 1;
     }
+    dir[dlen] = '\0';
 
-    char *cmd = malloc(dlen + sizeof(CMD_TL));
+    char *cmd = malloc(dlen + sizeof(CMD_TL) - 2);
     sprintf(cmd, CMD_TL, dir);
     free(dir);
 
