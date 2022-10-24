@@ -17,7 +17,8 @@ set PATH=^
 %PATH%
 
 :: commands.
-doskey cd    = cd  /d $1
+doskey cc    = cl /nologo $*
+doskey cd    = cd /d $1
 doskey ls    = dir /d $*
 doskey open  = start "" $*
 doskey which = where $*
