@@ -70,9 +70,9 @@ char *pathdir(char *path) {
     while (it >= path && ispathsep(*it)) {
         it -= 1;
     }
-    //if all characters are separators.
+    //if all characters are separators. return "/".
     if (it == path - 1) {
-        *path = '\0';
+        strcpy(path, "/");
         return path;
     }
 
@@ -81,11 +81,11 @@ char *pathdir(char *path) {
     }
     
     if (it == path -1) {
-        //only base.
-        path[0] = '\0';
+        //only base. return ".".
+        strcpy(path, ".");
     } else if (it == path) {
-        //like "/xx", should return "/".
-        path[1] = '\0';
+        //like "/x". return "/".
+        strcpy(path, "/");
     } else {
         *it = '\0';
     }
