@@ -1,7 +1,6 @@
 //count the number of lines of source files.
 
 #include "fileio.h"
-#include "libgen.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "strex.h"
@@ -35,12 +34,11 @@ bool support(const char *path) {
 
 char *copydir(const char *path) {
     char *dir = strdup(path);
-    dirname(dir);
-    return dir;
+    return pathdir(dir);
 }
 
 char *copybase(const char *path) {
-    char *base = basename((char *)path);
+    char *base = pathbase(path);
     return strdup(base);
 }
 
@@ -104,7 +102,7 @@ void accfil(COUNTINF *inf, const char *path) {
     free(text);
 }
 
-void accdir(COUNTINF *inf, const char *dir, const char *bpat) {
+void accdir(COUNTINF *inf, const char *dir) {
     int    num  = 0;
     char **list = dcopyitems(dir, &num);
     if (!list) {
@@ -112,17 +110,12 @@ void accdir(COUNTINF *inf, const char *dir, const char *bpat) {
     }
 
     for (int i = 0; i < num; ++i) {
-        char *base = list[i];
-        if (bpat && !wcmatch(bpat, base)) {
-            continue;
-        }
-
-        char *path = copypath(dir, base);
+        char *path = copypath(dir, list[i]);
         
         bool isdir = false;
         bool exist = fexists(path, &isdir);
         if (isdir) {
-            accdir(inf, path, NULL);
+            accdir(inf, path);
         } else if (exist) {
             accfil(inf, path);
         }
@@ -134,18 +127,22 @@ void accdir(COUNTINF *inf, const char *dir, const char *bpat) {
 }
 
 void accpat(COUNTINF *inf, const char *pat) {
-    char *dir = copydir(pat);
-    //wildcards in directory paths are not supported.
-    if (iswcpat(dir)) {
-        free(dir);
-        return;
+    int    num  = 0;
+    char **list = wccopyfiles(pat, &num);
+
+    for (int i = 0; i < num; ++i) {
+        char *path = list[i];
+
+        bool isdir = false;
+        bool exist = fexists(path, &isdir);
+        if (isdir) {
+            accdir(inf, path);
+        } else if (exist) {
+            accfil(inf, path);
+        }
     }
 
-    char *bpat = copybase(pat);
-    accdir(inf, dir, bpat);
-
-    free(dir );
-    free(bpat);
+    wcfreefiles(list, num);
 }
 
 int main(int argc, const char *argv[]) {
@@ -165,7 +162,7 @@ int main(int argc, const char *argv[]) {
         bool isdir = false;
         bool exist = fexists(item, &isdir);
         if (isdir) {
-            accdir(&inf, item, NULL);
+            accdir(&inf, item);
 
         } else if (exist) {
             accfil(&inf, item);
