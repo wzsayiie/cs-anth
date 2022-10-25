@@ -22,7 +22,7 @@ bool endswith(const char *str, const char *suf) {
 char *stridup(const char *str, size_t len) {
     char *cpy = malloc(len + 1);
 
-    strncpy(cpy, str, len);
+    memcpy(cpy, str, len);
     cpy[len] = '\0';
 
     return cpy;
