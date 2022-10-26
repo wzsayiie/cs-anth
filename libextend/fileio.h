@@ -2,15 +2,15 @@
 
 #include "fioapi.h"
 
-#define fexists    _h_fexists
-#define getexepath _h_getexepath
-#define getworkdir _h_getworkdir
-#define gettmpdir  _h_gettmpdir
-#define dmake      _h_dmake
-#define denter     _h_denter
-#define dopen      _h_dopen
-#define dcopy      _h_dcopy
-#define dclose     _h_dclose
+static bool   (*const fexists   )(const char *, bool *) = _h_fexists   ;
+static size_t (*const getexepath)(char *, size_t)       = _h_getexepath;
+static size_t (*const getworkdir)(char *, size_t)       = _h_getworkdir;
+static size_t (*const gettmpdir )(char *, size_t)       = _h_gettmpdir ;
+static bool   (*const dmake     )(const char *)         = _h_dmake     ;
+static bool   (*const denter    )(const char *)         = _h_denter    ;
+static CDIR  *(*const dopen     )(const char *)         = _h_dopen     ;
+static char  *(*const dcopy     )(CDIR *)               = _h_dcopy     ;
+static void   (*const dclose    )(CDIR *)               = _h_dclose    ;
 
 //return value need to free.
 __libf char *fcopyall(const char *path, size_t *size);

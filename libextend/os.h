@@ -2,5 +2,5 @@
 
 #include "osapi.h"
 
-#define sleepmilli _h_sleepmilli
-#define nowmilli   _h_nowmilli
+static void    (*const sleepmilli)(int64_t) = _h_sleepmilli;
+static int64_t (*const nowmilli  )(void   ) = _h_nowmilli  ;
