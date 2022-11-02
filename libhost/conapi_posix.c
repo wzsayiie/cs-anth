@@ -59,7 +59,7 @@ void _h_endrawin(void) {
     _israwin = false;
 }
 
-typedef struct _struct_KEYITEM {
+typedef struct _s_KEYITEM {
     ckey        dst;
     const char *seq;
 } KEYITEM;
@@ -78,7 +78,7 @@ static KEYITEM _keylist[] = {
     { K_SHIFT_TAB  , "\e[Z"    },
 };
 
-typedef struct _struct_KEYRANGE {
+typedef struct _s_KEYRANGE {
     KEYITEM *head;
     KEYITEM *tail;
     int      idx ;

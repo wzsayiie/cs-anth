@@ -19,7 +19,7 @@ __host int _h_readkey(void);
 
 //in raw input mode,
 //"readkey()" possibly returns control characters followed.
-typedef enum _enum_ckey {
+typedef enum _e_ckey {
     K_NUL    =  0,
 
     K_CTRL_A =  1,
@@ -70,7 +70,7 @@ typedef enum _enum_ckey {
 
 //stduot & stderr:
 
-typedef enum _enum_ccolor {
+typedef enum _e_ccolor {
     C_BLACK       =  0,
     C_RED         =  1,
     C_GREEN       =  2,

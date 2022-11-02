@@ -19,7 +19,7 @@ _DEF_INT_CMP(umaxz , uminz , size_t            )
 //vector:
 
 #define _DEF_VEC(v2, v3, v4, m2, m3, m4, tp)            \
-/**/    typedef union _union_##v2 {                     \
+/**/    typedef union _u_##v2 {                         \
 /**/        struct {                                    \
 /**/            union { tp x; tp w; };                  \
 /**/            union { tp y; tp h; };                  \
@@ -35,7 +35,7 @@ _DEF_INT_CMP(umaxz , uminz , size_t            )
 /**/        return v;                                   \
 /**/    }                                               \
 /**/                                                    \
-/**/    typedef union _union_##v3 {                     \
+/**/    typedef union _u_##v3 {                         \
 /**/        struct {                                    \
 /**/            union { tp x; tp r; };                  \
 /**/            union { tp y; tp g; };                  \
@@ -53,7 +53,7 @@ _DEF_INT_CMP(umaxz , uminz , size_t            )
 /**/        return v;                                   \
 /**/    }                                               \
 /**/                                                    \
-/**/    typedef union _union_##v4 {                     \
+/**/    typedef union _u_##v4 {                         \
 /**/        struct {                                    \
 /**/            union { tp x;       tp r; };            \
 /**/            union { tp y;       tp g; };            \
