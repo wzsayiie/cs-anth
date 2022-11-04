@@ -1,77 +1,67 @@
 #pragma once
 
 #include "math.h"
-#include "stddef.h"
+#include "stdint.h"
 
-//compare:
+//compare.
+static inline int imax(int x, int y) { return x > y ? x : y; }
+static inline int imin(int x, int y) { return x < y ? x : y; }
 
-#define _DEF_INT_CMP(max, min, tp)                                  \
-/**/    static inline tp max(tp x, tp y) { return x > y ? x : y; }  \
-/**/    static inline tp min(tp x, tp y) { return x < y ? x : y; }
+//vectors:
+typedef union _u_VDOUBLE2 VDOUBLE2;
+typedef union _u_VDOUBLE3 VDOUBLE3;
+typedef union _u_VDOUBLE4 VDOUBLE4;
 
-_DEF_INT_CMP(imax  , imin  , int               )
-_DEF_INT_CMP(imaxll, iminll, long long         )
-_DEF_INT_CMP(imaxp , iminp , ptrdiff_t         )
-_DEF_INT_CMP(umax  , umin  , unsigned int      )
-_DEF_INT_CMP(umaxll, uminll, unsigned long long)
-_DEF_INT_CMP(umaxz , uminz , size_t            )
+union _u_VDOUBLE2 {
+    struct {
+        double x;
+        double y;
+    };
+    double p[2];
+};
+union _u_VDOUBLE3 {
+    struct {
+        union { double x; double r; };
+        union { double y; double g; };
+        union { double z; double b; };
+    };
+    double p[3];
+};
+union _u_VDOUBLE4 {
+    struct {
+        union { double x; double r; };
+        union { double y; double g; };
+        union { double w; double b; };
+        union { double h; double a; };
+    };
+    double p[4];
+};
 
-//vector:
+typedef union _u_VINT2 VINT2;
+typedef union _u_VINT3 VINT3;
+typedef union _u_VINT4 VINT4;
 
-#define _DEF_VEC(v2, v3, v4, m2, m3, m4, tp)            \
-/**/    typedef union _u_##v2 {                         \
-/**/        struct {                                    \
-/**/            union { tp x; tp w; };                  \
-/**/            union { tp y; tp h; };                  \
-/**/        };                                          \
-/**/        tp i[2];                                    \
-/**/    } v2;                                           \
-/**/                                                    \
-/**/    static inline v2 m2(tp x, tp y) {               \
-/**/        v2 v; {                                     \
-/**/            v.x = x;                                \
-/**/            v.y = y;                                \
-/**/        }                                           \
-/**/        return v;                                   \
-/**/    }                                               \
-/**/                                                    \
-/**/    typedef union _u_##v3 {                         \
-/**/        struct {                                    \
-/**/            union { tp x; tp r; };                  \
-/**/            union { tp y; tp g; };                  \
-/**/            union { tp z; tp b; };                  \
-/**/        };                                          \
-/**/        tp i[3];                                    \
-/**/    } v3;                                           \
-/**/                                                    \
-/**/    static inline v3 m3(tp x, tp y, tp z) {         \
-/**/        v3 v; {                                     \
-/**/            v.x = x;                                \
-/**/            v.y = y;                                \
-/**/            v.z = z;                                \
-/**/        }                                           \
-/**/        return v;                                   \
-/**/    }                                               \
-/**/                                                    \
-/**/    typedef union _u_##v4 {                         \
-/**/        struct {                                    \
-/**/            union { tp x;       tp r; };            \
-/**/            union { tp y;       tp g; };            \
-/**/            union { tp z; tp h; tp b; };            \
-/**/            union { tp w;       tp a; };            \
-/**/        };                                          \
-/**/        tp i[4];                                    \
-/**/    } v4;                                           \
-/**/                                                    \
-/**/    static inline v4 m4(tp x, tp y, tp z, tp w) {   \
-/**/        v4 v; {                                     \
-/**/            v.x = x;                                \
-/**/            v.y = y;                                \
-/**/            v.z = z;                                \
-/**/            v.w = w;                                \
-/**/        }                                           \
-/**/        return v;                                   \
-/**/    }
-
-_DEF_VEC(CFLOAT2, CFLOAT3, CFLOAT4, mkfloat2, mkfloat3, mkfloat4, float)
-_DEF_VEC(CINT2  , CINT3  , CINT4  , mkint2  , mkint3  , mkint4  , int  )
+union _u_VINT2 {
+    struct {
+        int x;
+        int y;
+    };
+    int p[2];
+};
+union _u_VINT3 {
+    struct {
+        union { int x; int r; };
+        union { int y; int g; };
+        union { int z; int b; };
+    };
+    int p[3];
+};
+union _u_VINT4 {
+    struct {
+        union { int x; int r; };
+        union { int y; int g; };
+        union { int w; int b; };
+        union { int h; int a; };
+    };
+    int p[4];
+};
