@@ -103,14 +103,14 @@ void accfil(COUNTINF *inf, const char *path) {
 }
 
 void accdir(COUNTINF *inf, const char *dir) {
-    int    num  = 0;
-    char **list = dcopyitems(dir, &num);
+    XLIST *list = dcopyitems(dir);
     if (!list) {
         return;
     }
 
-    for (int i = 0; i < num; ++i) {
-        char *path = copypath(dir, list[i]);
+    for (int i = 0; i < xlcount(list); ++i) {
+        char *base = __xistr xlget(list, i);
+        char *path = copypath(dir, base);
         
         bool isdir = false;
         bool exist = fexists(path, &isdir);
@@ -123,15 +123,17 @@ void accdir(COUNTINF *inf, const char *dir) {
         free(path);
     }
 
-    dfreeitems(list, num);
+    xlfree(list, free);
 }
 
 void accpat(COUNTINF *inf, const char *pat) {
-    int    num  = 0;
-    char **list = wccopyfiles(pat, &num);
+    XLIST *list = wccopyfiles(pat);
+    if (!list) {
+        return;
+    }
 
-    for (int i = 0; i < num; ++i) {
-        char *path = list[i];
+    for (int i = 0; i < xlcount(list); ++i) {
+        char *path = __xistr xlget(list, i);
 
         bool isdir = false;
         bool exist = fexists(path, &isdir);
@@ -142,7 +144,7 @@ void accpat(COUNTINF *inf, const char *pat) {
         }
     }
 
-    wcfreefiles(list, num);
+    xlfree(list, free);
 }
 
 int main(int argc, const char *argv[]) {
