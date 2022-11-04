@@ -4,6 +4,13 @@
 
 //assist:
 
+static XITEM *xistore(XITEM item) {
+    static XITEM cache = { NULL };
+
+    cache = item;
+    return &cache;
+}
+
 static void xlgrow(XLIST *list, int diff) {
     list->count += diff;
     list->items = realloc(list->items, sizeof(XITEM) * (size_t)(list->count));
@@ -15,13 +22,6 @@ static void xlmove(XLIST *list, int dst, int src, int count) {
     size_t c = sizeof(XITEM) * (size_t)count;
 
     memmove(d, s, c);
-}
-
-static XITEM *xlreturn(XITEM item) {
-    static XITEM store = { NULL };
-
-    store = item;
-    return &store;
 }
 
 //list:
@@ -57,7 +57,7 @@ void xlsetd(XLIST *l, int n, xifree f, double i) { xlset(l, n, f, (XITEM){ .dbl 
 void xlseti(XLIST *l, int n, xifree f, int    i) { xlset(l, n, f, (XITEM){ .num = i }); }
 
 XITEM *xlget(XLIST *list, int index) {
-    return xlreturn(list->items[index]);
+    return xistore(list->items[index]);
 }
 
 void xlinsert(XLIST *list, int index, XITEM item) {
@@ -81,7 +81,7 @@ XITEM *xlremove(XLIST *list, int index, xifree ifree) {
     xlgrow(list, -1);
 
     //NOTE: if the item was freed, return value is garbage.
-    return xlreturn(item);
+    return xistore(item);
 }
 
 void xlpush(XLIST *list, XITEM item) {

@@ -10,6 +10,8 @@ typedef union _u_XITEM {
     int    num;
 } XITEM;
 
+typedef void (*xifree)(void *);
+
 //cast a "XITEM *" to "char *", "double" and "int".
 #define __xistr  *(char * *)
 #define __xidbl  *(double *)
@@ -25,8 +27,6 @@ typedef struct _s_XLIST {
 static inline int xlcount(XLIST *list) {
     return list->count;
 }
-
-typedef void (*xifree)(void *);
 
 __libf XLIST *xlalloc  (void);
 __libf void   xlfree   (XLIST *list, xifree ifree);
