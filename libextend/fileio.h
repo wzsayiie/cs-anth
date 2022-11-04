@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fioapi.h"
+#include "xlist.h"
 
 static bool   (*const fexists   )(const char *, bool *) = _h_fexists   ;
 static size_t (*const getexepath)(char *, size_t)       = _h_getexepath;
@@ -19,5 +20,4 @@ __libf void fwriteall(const char *path, const void *dat, size_t datsz);
 __libf void dmakeall (const char *path);
 
 //get sub-items of a directory.
-__libf char **dcopyitems(const char *path , int *num);
-__libf void   dfreeitems(char      **items, int  num);
+__libf XLIST *dcopyitems(const char *path);

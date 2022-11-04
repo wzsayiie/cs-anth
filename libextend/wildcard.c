@@ -55,15 +55,15 @@ bool wcmatch(const char *pat, const char *str) {
     return !*pat && !*str;
 }
 
-char **wccopyfiles(const char *pat, int *num) {
+XLIST *wccopyfiles(const char *pat) {
     //the pattern does not contain wildcards.
     if (!iswcpat(pat)) {
-        char **files = malloc(sizeof(char *));
+        XLIST *list = xlalloc();
 
-        *files = strdup(pat);
-        *num   = 1;
+        char *file = strdup(pat);
+        xlpushp(list, file);
 
-        return files;
+        return list;
     }
 
     char *dir = strdup(pat);
@@ -72,53 +72,42 @@ char **wccopyfiles(const char *pat, int *num) {
     //wildcards in directory path is unsupported.
     if (iswcpat(dir)) {
         free(dir);
-
-        *num = 0;
         return NULL;
     }
 
-    int    candnum = 0;
-    char **candids = dcopyitems(dir, &candnum);
-
-    if (candnum == 0) {
+    XLIST *bases = dcopyitems(dir);
+    if (!bases) {
         free(dir);
-
-        *num = 0;
         return NULL;
     }
 
     //filter out suiable files:
-    char **files = NULL;
-    *num = 0;
+    XLIST *list = NULL;
+    char  *bpat = pathbase(pat);
+    size_t dlen = strlen(dir);
 
-    const char *base = pathbase(pat);
-    size_t      dlen = strlen(dir);
-
-    for (int i = 0; i < candnum; ++i) {
-        char *cand = candids[i];
-        if (!wcmatch(base, cand)) {
+    for (int i = 0; i < xlcount(bases); ++i) {
+        char *base = __xistr xlget(bases, i);
+        if (!wcmatch(bpat, base)) {
             continue;
         }
 
-        size_t clen = strlen(cand);
-        char  *file = malloc(dlen + 1 + clen + 1);
-        strcpy (file, dir);
-        pathcat(file, candids[i]);
+        //NOTE: splice a full path.
+        size_t blen = strlen(base);
+        char  *item = malloc(dlen + 1 + blen + 1);
+        strcpy (item, dir );
+        pathcat(item, base);
 
-        files = realloc(files, sizeof(char *) * (*num + 1));
-        files[*num] = file;
-        *num += 1;
+        //IMPORTANT: allocate when the list is needed.
+        //do not return a list with 0 length.
+        if (!list) {
+            list = xlalloc();
+        }
+        xlpushp(list, item);
     }
 
-    dfreeitems(candids, candnum);
+    xlfree(bases, free);
     free(dir);
 
-    return files;
-}
-
-void wcfreefiles(char **files, int num) {
-    for (int i = 0; i < num; ++i) {
-        free(files[i]);
-    }
-    free(files);
+    return list;
 }

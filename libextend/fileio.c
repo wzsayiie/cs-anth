@@ -53,20 +53,13 @@ void dmakeall(const char *path) {
     free(bgn);
 }
 
-char **dcopyitems(const char *path, int *num) {
-    //allocate number at a time.
-    const size_t ONCE_ALLOC_N = 16;
-
+XLIST *dcopyitems(const char *path) {
     CDIR *dir = dopen(path);
     if (!dir) {
-        *num = 0;
         return NULL;
     }
 
-    char **items = NULL;
-    int    alln  = 0;
-    int    usedn = 0;
-
+    XLIST *list = NULL;
     while (true) {
         char *it = dcopy(dir);
         if (!it) {
@@ -80,23 +73,14 @@ char **dcopyitems(const char *path, int *num) {
             continue;
         }
 
-        if (usedn == alln) {
-            alln += ONCE_ALLOC_N;
-            items = realloc(items, alln * sizeof(char *));
+        //IMPORTANT: allocate when the list is needed.
+        //do not return a list with 0 length.
+        if (!list) {
+            list = xlalloc();
         }
-
-        items[usedn] = it;
-        usedn += 1;
+        xlpushp(list, it);
     }
     dclose(dir);
 
-    *num = usedn;
-    return items;
-}
-
-void dfreeitems(char **items, int num) {
-    for (int i = 0; i < num; ++i) {
-        free(items[i]);
-    }
-    free(items);
+    return list;
 }
