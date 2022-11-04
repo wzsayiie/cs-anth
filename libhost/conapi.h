@@ -3,10 +3,10 @@
 #include "condition.h"
 #include "stdbool.h"
 
-//window infomation.
+//window information.
 __host void _h_getwinsize(int *width, int *height);
-__host void _h_stepcur   (int  stepx, int  stepy );
-__host void _h_showcur   (bool show);
+__host void _h_stepcursor(int  stepx, int  stepy );
+__host void _h_showcursor(bool show);
 
 //stdin:
 
@@ -55,7 +55,7 @@ typedef enum _e_ckey {
     K_SPACE  = 32,
     K_BACK   =127,
 
-    //custom control character.
+    //extension control character.
     K_SHIFT_TAB   = 224,
     K_SHIFT_LEFT  = 225,
     K_SHIFT_UP    = 226,

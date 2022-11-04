@@ -16,7 +16,7 @@ void _h_getwinsize(int *width, int *height) {
     if (height) { *height = size.ws_row; }
 }
 
-void _h_stepcur(int stepx, int stepy) {
+void _h_stepcursor(int stepx, int stepy) {
     if (stepx < 0) { printf("\e[%dD", -stepx); }
     if (stepx > 0) { printf("\e[%dC",  stepx); }
 
@@ -24,22 +24,21 @@ void _h_stepcur(int stepx, int stepy) {
     if (stepy > 0) { printf("\e[%dB",  stepy); }
 }
 
-void _h_showcur(bool show) {
+void _h_showcursor(bool show) {
     printf(show ? "\e[?25h" : "\e[?25l");
 }
 
 //stdin:
 
-static bool           _israwin = false;
+static bool           _iscanon = false;
 static struct termios _canondat;
 
 void _h_beginrawin(void) {
     //record flags of canonical input mode.
     tcgetattr(STDIN_FILENO, &_canondat);
+    _iscanon = false;
 
     //set flags for raw input mode:
-    _israwin = true;
-
     struct termios raw = _canondat;
     raw.c_lflag &= ~ICANON; //disable canonical.
     raw.c_lflag &= ~ECHO  ; //disable echo.
@@ -56,11 +55,11 @@ void _h_beginrawin(void) {
 
 void _h_endrawin(void) {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &_canondat);
-    _israwin = false;
+    _iscanon = true;
 }
 
 typedef struct _s_KEYITEM {
-    ckey        dst;
+    ckey        val;
     const char *seq;
 } KEYITEM;
 
@@ -84,15 +83,15 @@ typedef struct _s_KEYRANGE {
     int      idx ;
 } KEYRANGE;
 
-static bool clipkeyrange(KEYRANGE *range, char aim) {
-    while (range->head < range->tail && range->head->seq[range->idx] < aim) {
+static bool clipkeyrange(KEYRANGE *range, char val) {
+    while (range->head < range->tail && range->head->seq[range->idx] < val) {
         range->head += 1;
     }
-    while (range->tail > range->head && range->tail->seq[range->idx] > aim) {
+    while (range->tail > range->head && range->tail->seq[range->idx] > val) {
         range->tail -= 1;
     }
 
-    return range->head->seq[range->idx] == aim;
+    return range->head->seq[range->idx] == val;
 }
 
 static int readkeyseq() {
@@ -104,7 +103,7 @@ static int readkeyseq() {
     while (true) {
         //only one left.
         if (range.head == range.tail) {
-            return range.head->dst;
+            return range.head->val;
         }
 
         char    chr = 0;
@@ -114,7 +113,7 @@ static int readkeyseq() {
         if (num != 1) {
             bool found = clipkeyrange(&range, '\0');
             if (found) {
-                return range.head->dst;
+                return range.head->val;
             } else {
                 return K_NUL;
             }
@@ -133,7 +132,7 @@ static int readkeyseq() {
 
 int _h_readkey(void) {
     //in canonical input mode.
-    if (!_israwin) {
+    if (_iscanon) {
         return getchar();
     }
 

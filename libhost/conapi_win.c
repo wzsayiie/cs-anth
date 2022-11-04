@@ -3,7 +3,7 @@
 #include "ctype.h"
 #include "stdio.h"
 
-//window infomation:
+//window information:
 
 void _h_getwinsize(int *width, int *height) {
     HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -14,7 +14,7 @@ void _h_getwinsize(int *width, int *height) {
     if (height) { *height = info.srWindow.Bottom - info.srWindow.Top  + 1; }
 }
 
-void _h_stepcur(int stepx, int stepy) {
+void _h_stepcursor(int stepx, int stepy) {
     HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
 
     CONSOLE_SCREEN_BUFFER_INFO info;
@@ -25,7 +25,7 @@ void _h_stepcur(int stepx, int stepy) {
     SetConsoleCursorPosition(outh, info.dwCursorPosition);
 }
 
-void _h_showcur(bool show) {
+void _h_showcursor(bool show) {
     HANDLE outh = GetStdHandle(STD_OUTPUT_HANDLE);
 
     CONSOLE_CURSOR_INFO info;
@@ -37,7 +37,7 @@ void _h_showcur(bool show) {
 
 //stdin:
 
-static bool  _israwin  = false;
+static bool  _iscanon  = true;
 static DWORD _canondat = 0;
 
 void _h_beginrawin(void) {
@@ -45,9 +45,9 @@ void _h_beginrawin(void) {
 
     //record data of canonical input mode.
     GetConsoleMode(inh, &_canondat);
+    _iscanon = false;
 
     //set flags for raw input mode.
-    _israwin = true;
     SetConsoleMode(inh, ENABLE_WINDOW_INPUT);
 }
 
@@ -55,20 +55,19 @@ void _h_endrawin(void) {
     HANDLE inh = GetStdHandle(STD_INPUT_HANDLE);
     SetConsoleMode(inh, _canondat);
 
-    _israwin = false;
+    _iscanon = true;
 }
 
 int _h_readkey(void) {
-    if (!_kbhit()) {
-        return K_NUL;
-    }
-
     //in canonical input mode.
-    if (!_israwin) {
+    if (_iscanon) {
         return getchar();
     }
 
     //in raw input model:
+    if (!_kbhit()) {
+        return K_NUL;
+    }
 
     HANDLE       inh = GetStdHandle(STD_INPUT_HANDLE);
     INPUT_RECORD rec ;
@@ -84,19 +83,19 @@ int _h_readkey(void) {
         return K_NUL;
     }
 
-    DWORD modi = key.dwControlKeyState;
-    bool  ctrl = (modi & LEFT_CTRL_PRESSED) || (modi & RIGHT_CTRL_PRESSED);
-    bool  shft = modi & SHIFT_PRESSED;
-    WORD  code = key.wVirtualKeyCode;
-    char  asci = key.uChar.AsciiChar;
+    DWORD state = key.dwControlKeyState;
+    bool  ctrl  = (state & LEFT_CTRL_PRESSED) || (state & RIGHT_CTRL_PRESSED);
+    bool  shift = state & SHIFT_PRESSED;
+    WORD  code  = key.wVirtualKeyCode;
+    char  ascii = key.uChar.AsciiChar;
 
     //ctrl+a ~ ctrl+z.
-    if (ctrl && !shft && 'A' <= code && code <= 'Z') {
+    if (ctrl && !shift && 'A' <= code && code <= 'Z') {
         return code - 'A' + 1;
     }
 
     //controls.
-    if (!ctrl && !shft) {
+    if (!ctrl && !shift) {
         if (code == VK_RETURN) { return K_ENTER; }
         if (code == VK_TAB   ) { return K_TAB  ; }
         if (code == VK_ESCAPE) { return K_ESC  ; }
@@ -105,21 +104,21 @@ int _h_readkey(void) {
     }
 
     //shift+tab.
-    if (!ctrl && shft && code == VK_TAB) {
+    if (!ctrl && shift && code == VK_TAB) {
         return K_SHIFT_TAB;
     }
 
     //arrows.
     if (!ctrl) {
-        if (code == VK_LEFT ) { return shft ? K_SHIFT_LEFT  : K_LEFT ; }
-        if (code == VK_UP   ) { return shft ? K_SHIFT_UP    : K_UP   ; }
-        if (code == VK_RIGHT) { return shft ? K_SHIFT_RIGHT : K_RIGHT; }
-        if (code == VK_DOWN ) { return shft ? K_SHIFT_DOWN  : K_DOWN ; }
+        if (code == VK_LEFT ) { return shift ? K_SHIFT_LEFT  : K_LEFT ; }
+        if (code == VK_UP   ) { return shift ? K_SHIFT_UP    : K_UP   ; }
+        if (code == VK_RIGHT) { return shift ? K_SHIFT_RIGHT : K_RIGHT; }
+        if (code == VK_DOWN ) { return shift ? K_SHIFT_DOWN  : K_DOWN ; }
     }
 
     //printables.
-    if (isprint(asci)) {
-        return asci;
+    if (isprint(ascii)) {
+        return ascii;
     }
 
     return K_NUL;
@@ -163,8 +162,10 @@ static void setprtattr(WORD mask, WORD value) {
 void _h_setforecolor(ccolor color) {
     recordprtattr();
 
-    static WORD code[C_DEFCOLOR] = {0};
-    if (!code[C_DEFCOLOR - 1]) {
+    static WORD code[C_DEFCOLOR];
+    static bool first = true;
+    if (first) {
+        first = false;
 
         code[C_BLACK      ] =  0;
         code[C_RED        ] =  FOREGROUND_RED   ;
@@ -196,8 +197,10 @@ void _h_setforecolor(ccolor color) {
 void _h_setbackcolor(ccolor color) {
     recordprtattr();
 
-    static WORD code[C_DEFCOLOR] = {0};
-    if (!code[C_DEFCOLOR - 1]) {
+    static WORD code[C_DEFCOLOR];
+    static bool first = true;
+    if (first) {
+        first = false;
 
         code[C_BLACK      ] =  0;
         code[C_RED        ] =  BACKGROUND_RED   ;
