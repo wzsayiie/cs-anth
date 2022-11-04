@@ -19,15 +19,6 @@ bool endswith(const char *str, const char *suf) {
     return 0;
 }
 
-char *stridup(const char *str, size_t len) {
-    char *cpy = malloc(len + 1);
-
-    memcpy(cpy, str, len);
-    cpy[len] = '\0';
-
-    return cpy;
-}
-
 //path:
 
 static const char SEP = '/';
