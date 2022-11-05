@@ -63,8 +63,8 @@ typedef struct _s_KEYITEM {
     const char *seq;
 } KEYITEM;
 
-static KEYITEM _keylist[] = {
-    //IMPORTANT: data need to sort.
+static const KEYITEM _keylist[] = {
+    //NOTE: sorted data makes better performance.
     { K_ESC        , "\e"      },
     { K_SHIFT_UP   , "\e[1;2A" },
     { K_SHIFT_DOWN , "\e[1;2B" },
@@ -75,59 +75,51 @@ static KEYITEM _keylist[] = {
     { K_RIGHT      , "\e[C"    },
     { K_LEFT       , "\e[D"    },
     { K_SHIFT_TAB  , "\e[Z"    },
+    { K_NUL        , NULL      }
 };
 
-typedef struct _s_KEYRANGE {
-    KEYITEM *head;
-    KEYITEM *tail;
-    int      idx ;
-} KEYRANGE;
+static int filterkeyseq(const char *seq, size_t len, ckey *key) {
+    int count = 0;
+    for (const KEYITEM *it = _keylist; it->seq; ++it) {
+        if (strncmp(it->seq, seq, len) != 0) {
+            continue;
+        }
 
-static bool clipkeyrange(KEYRANGE *range, char val) {
-    while (range->head < range->tail && range->head->seq[range->idx] < val) {
-        range->head += 1;
+        if (count == 0) {
+            //the first candidate.
+            *key  = it->val;
+            count = 1;
+        } else {
+            //multiple candiates.
+            count = 2;
+            break;
+        }
     }
-    while (range->tail > range->head && range->tail->seq[range->idx] > val) {
-        range->tail -= 1;
-    }
-
-    return range->head->seq[range->idx] == val;
+    return count;
 }
 
-static int readkeyseq() {
-    KEYRANGE range;
-    range.head = _keylist;
-    range.tail = _keylist + sizeof(_keylist) / sizeof(KEYITEM) - 1;
-    range.idx  = 1;
+static ckey readkeyseq() {
+    char   seq[8] = "\e";
+    size_t len    = 1;
 
     while (true) {
-        //only one left.
-        if (range.head == range.tail) {
-            return range.head->val;
-        }
-
-        char    chr = 0;
-        ssize_t num = read(STDIN_FILENO, &chr, 1);
-
-        //no more data.
-        if (num != 1) {
-            bool found = clipkeyrange(&range, '\0');
-            if (found) {
-                return range.head->val;
-            } else {
-                return K_NUL;
-            }
-        }
-
-        //step one.
-        bool found = clipkeyrange(&range, chr);
-        if (found) {
-            range.idx += 1;
+        char    chr  = 0;
+        ssize_t cnum = read(STDIN_FILENO, &chr, 1);
+        if (cnum != 1) {
+            //no more data.
+            seq[len++] = '\0';
         } else {
-            return K_NUL;
+            seq[len++] = chr;
+        }
+
+        ckey key  = K_NUL;
+        int  snum = filterkeyseq(seq, len, &key);
+        switch (snum) {
+            case 0 : return K_NUL;  //no sequence available.
+            case 1 : return key;    //only one.
+            default: ;              //continue to read.
         }
     }
-    return K_NUL;
 }
 
 int _h_readkey(void) {
