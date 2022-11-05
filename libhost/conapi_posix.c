@@ -149,10 +149,14 @@ int _h_readkey(void) {
     }
 
     //controls.
-    if (chr == K_ENTER) { return K_ENTER; }
-    if (chr == K_TAB  ) { return K_TAB  ; }
-    if (chr == K_SPACE) { return K_SPACE; }
-    if (chr == K_BACK ) { return K_BACK ; }
+#if OS_MAC
+    if (chr == 127 /* del */) {
+        return K_BACK;
+    }
+#endif
+    if (chr == K_SPACE) {
+        return K_SPACE;
+    }
 
     //printables.
     if (isprint(chr)) {

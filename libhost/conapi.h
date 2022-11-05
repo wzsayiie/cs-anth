@@ -49,13 +49,13 @@ typedef enum _e_ckey {
     K_CTRL_Y = 25,
     K_CTRL_Z = 26,
 
-    K_ENTER  = K_CTRL_H,
+    K_BACK   = K_CTRL_H,
     K_TAB    = K_CTRL_I,
+    K_ENTER  = K_CTRL_M,
     K_ESC    = 27,
     K_SPACE  = 32,
-    K_BACK   =127,
 
-    //extension control character.
+    //extension control characters.
     K_SHIFT_TAB   = 224,
     K_SHIFT_LEFT  = 225,
     K_SHIFT_UP    = 226,
