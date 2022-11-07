@@ -149,13 +149,10 @@ int _h_readkey(void) {
     }
 
     //controls.
-#if OS_MAC
-    if (chr == 127 /* del */) {
-        return K_BACK;
-    }
-#endif
-    if (chr == K_SPACE) {
-        return K_SPACE;
+    if (chr == K_SPACE ||
+        chr == K_DEL   )
+    {
+        return chr;
     }
 
     //printables.

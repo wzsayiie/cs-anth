@@ -96,11 +96,11 @@ int _h_readkey(void) {
 
     //controls.
     if (!ctrl && !shift) {
-        if (code == VK_BACK  ) { return K_BACK ; }
         if (code == VK_TAB   ) { return K_TAB  ; }
         if (code == VK_RETURN) { return K_ENTER; }
         if (code == VK_ESCAPE) { return K_ESC  ; }
         if (code == VK_SPACE ) { return K_SPACE; }
+        if (code == VK_BACK  ) { return K_DEL  ; }
     }
 
     //shift+tab.
