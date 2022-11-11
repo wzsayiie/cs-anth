@@ -76,7 +76,7 @@ XLIST *dcopyitems(const char *path) {
         //IMPORTANT: allocate when the list is needed.
         //do not return a list with 0 length.
         if (!list) {
-            list = xlalloc();
+            list = xlcreate();
         }
         xlpushp(list, it);
     }

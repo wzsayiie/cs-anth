@@ -58,7 +58,7 @@ bool wcmatch(const char *pat, const char *str) {
 XLIST *wccopyfiles(const char *pat) {
     //the pattern does not contain wildcards.
     if (!iswcpat(pat)) {
-        XLIST *list = xlalloc();
+        XLIST *list = xlcreate();
 
         char *file = strdup(pat);
         xlpushp(list, file);
@@ -101,12 +101,12 @@ XLIST *wccopyfiles(const char *pat) {
         //IMPORTANT: allocate when the list is needed.
         //do not return a list with 0 length.
         if (!list) {
-            list = xlalloc();
+            list = xlcreate();
         }
         xlpushp(list, item);
     }
 
-    xlfree(bases, free);
+    xldestroy(bases, free);
     free(dir);
 
     return list;

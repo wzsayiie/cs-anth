@@ -123,7 +123,7 @@ void accdir(COUNTINF *inf, const char *dir) {
         free(path);
     }
 
-    xlfree(list, free);
+    xldestroy(list, free);
 }
 
 void accpat(COUNTINF *inf, const char *pat) {
@@ -144,7 +144,7 @@ void accpat(COUNTINF *inf, const char *pat) {
         }
     }
 
-    xlfree(list, free);
+    xldestroy(list, free);
 }
 
 int main(int argc, const char *argv[]) {

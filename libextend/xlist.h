@@ -1,6 +1,7 @@
 #pragma once
 
 #include "condition.h"
+#include "stdbool.h"
 
 //item:
 
@@ -24,12 +25,11 @@ typedef struct _s_XLIST {
     XITEM *items;
 } XLIST;
 
-static inline int xlcount(XLIST *list) {
-    return list->count;
-}
+static inline bool xlempty(XLIST *list) { return !list->count; }
+static inline int  xlcount(XLIST *list) { return  list->count; }
 
-__libf XLIST *xlalloc  (void);
-__libf void   xlfree   (XLIST *list, xifree ifree);
+__libf XLIST *xlcreate (void);
+__libf void   xldestroy(XLIST *list, xifree ifree);
 
 __libf void   xlset    (XLIST *list, int index, xifree ifree, XITEM  item);
 __libf void   xlsetp   (XLIST *list, int index, xifree ifree, void  *item);

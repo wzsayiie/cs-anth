@@ -26,11 +26,11 @@ static void xlmove(XLIST *list, int dst, int src, int count) {
 
 //list:
 
-XLIST *xlalloc(void) {
+XLIST *xlcreate(void) {
     return calloc(1, sizeof(XLIST));
 }
 
-void xlfree(XLIST *list, xifree ifree) {
+void xldestroy(XLIST *list, xifree ifree) {
     //IMPORTANT: passing null is allowed.
     if (!list) {
         return;
